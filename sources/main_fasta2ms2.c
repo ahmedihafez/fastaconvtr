@@ -51,7 +51,10 @@ int main(int argc, const char * argv[]) {
 	double **nsites1_pop_outg;
 	double **nsites2_pop_outg;
 	double **nsites3_pop_outg;
-	
+
+    char *chr_name;
+    char chr_name_all[ MSP_MAX_NAME];
+
 	char file_in[ MSP_MAX_FILENAME];
 	char file_out[MSP_MAX_FILENAME];
 	char file_GFF[MSP_MAX_FILENAME];
@@ -99,8 +102,13 @@ int main(int argc, const char * argv[]) {
 	/* Population index */
 	int pop_index = 0;
 	/* Sum of all nsam of all populations */
-	int int_total_nsam = 0;	
+	int int_total_nsam = 0;
+    
+    int i,j,k;
+    int nscaffolds;
+    char **chr_name_array;
 
+    memset( chr_name_all, 0, MSP_MAX_NAME);
 	memset( file_in,  0, MSP_MAX_FILENAME);
 	memset( file_out, 0, MSP_MAX_FILENAME);
 	memset( file_GFF, 0, MSP_MAX_FILENAME);
@@ -187,7 +195,7 @@ int main(int argc, const char * argv[]) {
                         exit(1);
                     }
                     break;
-				case 'f' : /* f fasta, tfasta, m ms format  */
+				case 'f' : /*output format: f fasta, t tfasta, m ms format  */
 					arg++;
 					format[0] = argv[arg][0];
 					if(format[0] == 'm') strcpy(msformat,"ms\0");
@@ -567,6 +575,10 @@ int main(int argc, const char * argv[]) {
                     arg++;
                     strcpy(file_masked, argv[arg] );
                     break;
+                case 'n' : /* name of the scaffold to analyze*/
+                    arg++;
+                    strcpy( chr_name_all, argv[arg] );
+                    break;
 				case 'h' : /* h HELP */
 					usage();
 					exit(0);
@@ -591,13 +603,13 @@ int main(int argc, const char * argv[]) {
     # [-W] + [-w -s]
      */
     if(input_format[0] != 'f' && ploidy != 1) {
-        fzprintf(file_output,&file_output_gz,"\n the option -p 2 is only available with fasta IUPAC input format");
-        printf("\nThe option -p 2 is only available with fasta IUPAC input format\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\n the option -p 2 is only available with fasta IUPAC input format");
+        printf("\nError: The option -p 2 is only available with fasta IUPAC input format\n");
         exit(1);
     }
 	if(file_Wcoord[0]!=0 && (slide > 0 && window>0)) {
-        fzprintf(file_output,&file_output_gz,"\n the option -W (coordinates file) is incompatible with definitions of -w (slide) and -s (slide)");
-        printf("\nThe option -W (coordinates file) is incompatible with definitions of -w (slide) and -s (slide)\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\n the option -W (coordinates file) is incompatible with definitions of -w (slide) and -s (slide)");
+        printf("\nError: The option -W (coordinates file) is incompatible with definitions of -w (slide) and -s (slide)\n");
         exit(1);
 	}/*
 	if(file_Wcoord[0]!=0 && (format[0] == 'f')) {
@@ -609,30 +621,56 @@ int main(int argc, const char * argv[]) {
         exit(1);
 	}*/
     if(file_wps[0]!=0 && file_GFF[0]!=0) {
-        fzprintf(file_output,&file_output_gz,"\n the option -g (gff file) is incompatible with option -E (weighting file)\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\n the option -g (gff file) is incompatible with option -E (weighting file)\n");
         exit(1);
     }
-    if((format[0]=='t') && (file_Wcoord[0]!=0 || (slide > 0 && window>0) || Physical_length == 0)) {
-        printf("\nWarning: The options -W or -w -s or -P are not effective using the output format -f tfasta\n");
+    if((format[0]=='t') && (/**/file_Wcoord[0]!=0 || /**/(slide > 0 && window>0) || Physical_length == 0)) {
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: The options -W or -w -s or -P are not effective using the output format -f tfasta\n");
+        printf("\nError: The options -W or -w -s or -P are not effective using the output format -f tfasta\n");
+        exit(0);
     }
     if((format[0]=='f') && ((slide > 0 && window>0) || Physical_length == 0)) {
-        printf("\nWarning: The options -w -s or -P are not effective using the output format -f fasta\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: The options -w -s or -P are not effective using the output format -f fasta\n");
+        printf("\nError: The options -w -s or -P are not effective using the output format -f fasta\n");
+        exit(0);
     }
     if(outgroup==1 && npops==0) {
-        fzprintf(file_output,&file_output_gz,"\n the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
-        printf("\n the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\nError:  the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
+        printf("\nError:  the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
         exit(1);
     }	
     if( format[0] == 'x' && npops==0) {
-        fzprintf(file_output,&file_output_gz,"\n the option -f x require the option -N ");
+        fzprintf(file_logerr,&file_logerr_gz,"\n the option -f x require the option -N ");
         exit(1);
     }
     if(include_unknown == 1 && format[0]=='m') {
         include_unknown = 0;
+        fzprintf(file_logerr,&file_logerr_gz,"Warning: The option -u 1 is only allowed in case GFF file is defined and the output format is not ms\n");
         printf("Warning: The option -u 1 is only allowed in case GFF file is defined and the output format is not ms\n");
     }
+    if(strcmp(chr_name_all,"") == 0 &&
+       ((input_format[0] == 'f' && (file_GFF[0] != '\0' || file_effsz[0] != '\0' || file_Wcoord[0] != '\0' || file_wps[0] != '\0' || file_masked[0] != '\0')) ||
+        (input_format[0] == 't' || format[0] == 't'))) {
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: the name of the scaffold (option -n) must be defined\n");
+        printf("\nError: the name of the scaffold (option -n) must be defined\n");
+        exit(1);
+    }
+    
+    
+    /*Define arrays and vectors*/
+    
+    if((fnut = (float *)calloc((unsigned long)4,sizeof(float))) == NULL) {
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: memory not reallocated. get_obsdata.5 \n");
+        exit(1);
+    }
+    /* Definition of a File Stream Buffer, for buffered IO */
+    if( (f = (char *)malloc((unsigned long)BUFSIZ*10)) == NULL ) {
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: memory not reallocated. get_obsdata.4 \n");
+        exit(1);
+    }
 
-    /*print all the argv. Header of the ms format*/
+    
+    /*print all the argv. Header*/
 	fzprintf(file_output,&file_output_gz,"#fastaconvtr ");
 	for(x=1;x<arg;x++) {
 		fzprintf(file_output,&file_output_gz,"%s ",argv[x]);
@@ -645,131 +683,179 @@ int main(int argc, const char * argv[]) {
 	}
 	else {
 		if( (file_input = fzopen( file_in, "r", &file_input_gz)) == 0) {
-			fzprintf(file_output,&file_output_gz,"\n It is not possible to open the input file %s\n", file_in);
+			fzprintf(file_logerr,&file_logerr_gz,"\n It is not possible to open the input file %s\n", file_in);
 			exit(1);
 		}
 	}
-	/*open the file for weigth for positions, if included*/
-	if( file_wps[0] == '\0') {
-		file_ws = 0;
-	}
-	else {
-		if( (file_ws = fzopen( file_wps, "r", &file_ws_gz)) == 0) {
-			fzprintf(file_output,&file_output_gz,"\n It is not possible to open the weighting file %s\n", file_wps);
-			exit(1);
-		}
-		if(read_weights_positions_file(file_ws,&file_ws_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wP,&wPV,&wV) == 0) {
-			fzprintf(file_output,&file_output_gz,"Error processing weighting file %s\n", file_wps);
-			exit(1);
-		}
-	}
-	/*open the file for effect sizes, if included*/
-	if( file_effsz[0] == '\0') {
-		file_es = 0;
-		wV = 0;
-	}
-	else {
-		if( (file_es = fzopen( file_effsz, "r", &file_es_gz)) == 0) {
-			fzprintf(file_output,&file_output_gz,"\n It is not possible to open the effect sizes file %s\n", file_effsz);
-			exit(1);
-		}
-		if(read_weights_file(file_es,&file_es_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wV,&Pp,&nV) == 0) {
-			fzprintf(file_output,&file_output_gz,"Error processing effect sizes file %s\n", file_effsz);
-			exit(1);
-		}
-	}
-	/* Opening coordinates file */
-	if( file_Wcoord[0] == '\0' ) {
-		file_wcoor = 0;
-		nwindows = 0;
-	}
-	else {
-		if( (file_wcoor = fzopen( file_Wcoord, "r", &file_wcoor_gz)) == 0) {
-			fzprintf(file_output,&file_output_gz,"\n It is not possible to open the coordinates file %s\n", file_Wcoord);
-			exit(1);
-		}
-		if(read_coordinates(file_wcoor,&file_wcoor_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wgenes,&nwindows) == 0) {
-			fzprintf(file_output,&file_output_gz,"Error processing coordinates file %s\n", file_Wcoord);
-			exit(1);
-		}
-		window = -1; 
-		slide = -1;
-	}
-    /* Opening mask coordinates file */
-    if( file_masked[0] == '\0' ) {
-        file_msk = 0;
-        masked_nwindows = 0;
+    setbuf(file_input,f);
+
+   
+    /*separate all values of the list chr_name_all in chr_name_array: */
+    /* Only do the list if input and output is tfa*/
+    nscaffolds = 1;
+    if(format[0] == 't' && input_format[0] == 't' ) {
+        chr_name_array = (char **)calloc(nscaffolds,sizeof(char *));
+        chr_name_array[0] = (char *)calloc(1,sizeof(MSP_MAX_NAME));
+        j=0;
+        while(chr_name_all[j] != '\0') {
+            k=0;
+            while(chr_name_all[j] != ',' && chr_name_all[j] != '\0' && j < MSP_MAX_NAME) {
+                chr_name_array[nscaffolds-1][k] = chr_name_all[j];
+                j++; k++;
+            }
+            if(chr_name_all[j] == ',') {
+                nscaffolds += 1;
+                chr_name_array = (char **)realloc(chr_name_array,nscaffolds*sizeof(char *));
+                chr_name_array[nscaffolds-1] = (char *)calloc(1,sizeof(MSP_MAX_NAME));
+                j++;
+            }
+       }
     }
     else {
-        if( (file_msk = fzopen( file_masked, "r", &file_msk_gz)) == 0) {
-            fzprintf(file_output,&file_output_gz,"\n It is not possible to open the masked coordinates file %s\n", file_masked);
-            exit(1);
-        }
-        if(read_coordinates(file_msk,&file_msk_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&masked_wgenes,&masked_nwindows) == 0) {
-            fzprintf(file_output,&file_output_gz,"Error processing masked coordinates file %s\n", file_masked);
+        chr_name_array = (char **)calloc(1,sizeof(char *));
+        chr_name_array[0] = (char *)calloc(1,sizeof(MSP_MAX_NAME));
+        strcpy(chr_name_array[0],chr_name_all);
+    }
+    
+    /*open the file for weigth for positions, if included*/
+    if( file_wps[0] == '\0') {
+        file_ws = 0;
+    }
+    else {
+        if( (file_ws = fzopen( file_wps, "r", &file_ws_gz)) == 0) {
+            fzprintf(file_logerr,&file_logerr_gz,"\n It is not possible to open the weighting file %s\n", file_wps);
             exit(1);
         }
     }
-	
-	
-	/* Definition of a File Stream Buffer, for buffered IO */
-	if( (f = (char *)malloc((unsigned long)BUFSIZ*10)) == NULL ) {
-		fzprintf(file_output,&file_output_gz,"\nError: memory not reallocated. get_obsdata.4 \n");
-		exit(1);
-	}
-	setbuf(file_input,f);
-	
-	/*Define arrays and vectors*/
-	
-	if((fnut = (float *)calloc((unsigned long)4,sizeof(float))) == NULL) {
-		fzprintf(file_output,&file_output_gz,"\nError: memory not reallocated. get_obsdata.5 \n");
-		exit(1);
-	}
-	if(format[0] == 't') 
-		tfasta = 1;
-	if(read_fasta(file_input,&file_input_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,input_format,&nsam,&lenR,&lenT,&lenP,&lenS,&vector_pos,&matrix_pol,ploidy,gfffiles,
-				  file_GFF,subset_positions,genetic_code,criteria_transcript,format,outgroup,
-				  &vector_sizepos,&svratio,&summatrix_sizepos,&nmissing,&mis_pos,fnut,&CpG,&GCs,wV,&svp,&pwmatrix_miss,file_es,&file_es_gz,file_in,file_out,refasta,tfasta,
-				  Pp,&CpGp,&Ap,&Cp,&Gp,&Tp,&GCp,&sort_nsam,&int_total_nsam_order,vint_perpop_nsam,
-				  npops,&sum_sam, &nsites1_pop, &nsites2_pop, &nsites3_pop, &nsites1_pop_outg, &nsites2_pop_outg, &nsites3_pop_outg,wP,wPV,file_ws,&file_ws_gz,wgenes,nwindows,include_unknown,masked_wgenes,masked_nwindows) == 0) {
-		fzprintf(file_output,&file_output_gz,"Error processing input data.\n");
-		exit(1);
-	}
-	fzclose(file_input,&file_input_gz);
-	if( file_effsz[0] != '\0') 
-		fzclose(file_es,&file_es_gz);
-	if(format[0] != 'm' && format[0]!= 'x') { /*!added parenthesis */
-		/*!removed exit(0);*/
-	} else {
-		if(slide == 0 && window == 0) {
-			slide = lenR;
-			window = lenR;
-		}
-		if(write_msfile(file_output,&file_output_gz, file_logerr, &file_logerr_gz, nsam,lenR,lenT,lenP,lenS,vector_pos,vector_sizepos,matrix_pol,slide,window,svratio,
-						summatrix_sizepos,nmissing,mis_pos,format,fnut,Physical_length,CpG,GCs,wV,nV,svp,pwmatrix_miss,tfasta,
-						Pp,CpGp,Ap,Cp,Gp,Tp,GCp,wgenes,nwindows,vint_perpop_nsam,npops, sum_sam,
-						nsites1_pop, nsites2_pop, nsites3_pop, nsites1_pop_outg, nsites2_pop_outg, nsites3_pop_outg,outgroup) == 0) {
-			fzprintf(file_output,&file_output_gz,"Error printing %s ms file.\n",msformat);
-			exit(1);
-		}
-		if(format[0] == 'e' || format[0] == 'x') free(mis_pos);
-		free(fnut);
 
-		free(sort_nsam);
-	}
+    /*do a loop using each value of chr_names_all into chr_name.*/
+    for(i=0;i<nscaffolds;i++) {
+        /*open the file for effect sizes, if included*/
+        /*
+        if( file_effsz[0] == '\0') {
+            file_es = 0;
+            wV = 0;
+        }
+        else {
+            if( (file_es = fzopen( file_effsz, "r", &file_es_gz)) == 0) {
+                fzprintf(file_output,&file_output_gz,"\n It is not possible to open the effect sizes file %s\n", file_effsz);
+                exit(1);
+            }
+        }
+        */
+        /* Opening coordinates file */
+        if( file_Wcoord[0] == '\0' ) {
+            file_wcoor = 0;
+            nwindows = 0;
+        }
+        else {
+            if( (file_wcoor = fzopen( file_Wcoord, "r", &file_wcoor_gz)) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"\n It is not possible to open the coordinates file %s\n", file_Wcoord);
+                exit(1);
+            }
+        }
+        /* Opening mask coordinates file */
+        if( file_masked[0] == '\0' ) {
+            file_msk = 0;
+            masked_nwindows = 0;
+        }
+        else {
+            if( (file_msk = fzopen( file_masked, "r", &file_msk_gz)) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"\n It is not possible to open the masked coordinates file %s\n", file_masked);
+                exit(1);
+            }
+        }
+ 
+        chr_name = chr_name_array[i];
+        
+        /*read the file for weigth for positions, if included*/
+        if( file_wps[0] != '\0') {
+            if(read_weights_positions_file(file_ws,&file_ws_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wP,&wPV,&wV,chr_name,i) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"Error processing weighting file %s\n", file_wps);
+                exit(1);
+            }
+        }
+        /*read the file for effect sizes, if included*/
+        /*
+        if( file_effsz[0] != '\0') {
+            if(read_weights_file(file_es,&file_es_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wV,&Pp,&nV,chr_name) == 0) {
+                fzprintf(file_output,&file_output_gz,"Error processing effect sizes file %s\n", file_effsz);
+                exit(1);
+            }
+        }
+        */
+        fzclose(file_es, &file_es_gz);
+        /* read coordinates file */
+        if( file_Wcoord[0] != '\0' ) {
+            if(read_coordinates(file_wcoor,&file_wcoor_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wgenes,&nwindows,chr_name) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"Error processing coordinates file %s\n", file_Wcoord);
+                exit(1);
+            }
+            window = -1;
+            slide = -1;
+        }
+        fzclose(file_wcoor, &file_wcoor_gz);
+        /* read mask coordinates file */
+        if( file_masked[0] != '\0' ) {
+            if(read_coordinates(file_msk,&file_msk_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&masked_wgenes,&masked_nwindows,chr_name) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"Error processing masked coordinates file %s\n", file_masked);
+                exit(1);
+            }
+        }
+        fzclose(file_msk, &file_msk_gz);
+
+        if(format[0] == 't')
+            tfasta = 1;
+        if(read_fasta(file_input,&file_input_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,input_format,&nsam,&lenR,&lenT,&lenP,&lenS,&vector_pos,&matrix_pol,ploidy,gfffiles,
+                      file_GFF,subset_positions,genetic_code,criteria_transcript,format,outgroup,
+                      &vector_sizepos,&svratio,&summatrix_sizepos,&nmissing,&mis_pos,fnut,&CpG,&GCs,wV,&svp,&pwmatrix_miss,file_es,&file_es_gz,file_in,file_out,refasta,tfasta,
+                      Pp,&CpGp,&Ap,&Cp,&Gp,&Tp,&GCp,&sort_nsam,&int_total_nsam_order,vint_perpop_nsam,
+                      npops,&sum_sam, &nsites1_pop, &nsites2_pop, &nsites3_pop, &nsites1_pop_outg, &nsites2_pop_outg, &nsites3_pop_outg,wP,wPV,file_ws,&file_ws_gz,wgenes,nwindows,include_unknown,masked_wgenes,masked_nwindows,chr_name,i,nscaffolds) == 0) {
+            fzprintf(file_logerr,&file_logerr_gz,"Error processing input data.\n");
+            exit(1);
+        }
+
+        if(format[0] == 'm') {
+            if(slide == 0 && window == 0) {
+                slide = lenR;
+                window = lenR;
+            }
+            if(write_msfile(file_output,&file_output_gz, file_logerr, &file_logerr_gz, nsam,lenR,lenT,lenP,lenS,vector_pos,vector_sizepos,matrix_pol,slide,window,svratio,
+                            summatrix_sizepos,nmissing,mis_pos,format,fnut,Physical_length,CpG,GCs,wV,nV,svp,pwmatrix_miss,tfasta,
+                            Pp,CpGp,Ap,Cp,Gp,Tp,GCp,wgenes,nwindows,vint_perpop_nsam,npops, sum_sam,
+                            nsites1_pop, nsites2_pop, nsites3_pop, nsites1_pop_outg, nsites2_pop_outg, nsites3_pop_outg,outgroup) == 0) {
+                fzprintf(file_logerr,&file_logerr_gz,"Error printing %s ms file.\n",msformat);
+                exit(1);
+            }
+            if(format[0] == 'e' || format[0] == 'x') free(mis_pos);
+            free(fnut);
+
+            free(sort_nsam);
+            
+        }
+        /*free all arrays*/
+        if(file_wcoor) free(wgenes);
+        if(file_msk) free(masked_wgenes);
+        if(file_ws || file_es) free(wP);
+        if(file_ws || file_es) free(wPV);
+        if(file_ws) free(wV);
+        if(file_es) free(Pp);
+        free(vector_sizepos);
+    }
     
 	/*!added. Here, we ensure that all files are closed before exiting */
 	fzclose(file_output, &file_output_gz);
 	fzclose(file_input, &file_input_gz);
-	fzclose(file_ws, &file_ws_gz);
-	fzclose(file_es, &file_es_gz);
-	fzclose(file_wcoor, &file_wcoor_gz);
-	fzclose(file_msk, &file_msk_gz);
+    fzclose(file_ws, &file_ws_gz);
 
     fzprintf(file_logerr,&file_logerr_gz,"\nProgram Ended\n");
     fzclose(file_logerr, &file_logerr_gz);
 
-
+    for(i=0;i<nscaffolds;i++) {
+        free(chr_name_array[i]);
+    }
+    free(chr_name_array);
+    
     /*
      * Test the just created GZ and INDEX files:
      * -----------------------------------------
@@ -815,6 +901,7 @@ void usage(void)
     printf("      -i [path and name of the input file (text or gz)]\n");
     printf("      -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]\n");
     printf("      -o [path and name of the output file (preferentially .gz except ms files)]\n");
+    printf("      -n [name of a single scaffold to analyze. For input+output tfa can be a list separated by commas(ex. -n chr1,chr2,chr3]\n");
     printf("   OPTIONAL PARAMETERS:\n");
     printf("      -h [help and exit]\n");
     printf("      -P [define window lengths in 'physical' positions (1) or in 'effective' positions (0)]. DEFAULT: 1\n");

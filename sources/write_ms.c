@@ -188,9 +188,9 @@ int write_msfile(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr, SG
 			sizewin = (double)window;
 		}
 		else {
-			beg = y = wgenes[wc++]; /*!removed -1;*/
+			beg = y = wgenes[wc++]-1;
 			if(beg >= lenR) beg = lenR-1;
-			endy = wgenes[wc++];
+			endy = wgenes[wc++]-1;
 			if(endy >= lenR) endy = lenR;
 			sizewin = (double)endy-(double)beg;
 		}
