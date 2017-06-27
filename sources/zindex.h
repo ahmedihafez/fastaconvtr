@@ -248,6 +248,7 @@ extern "C" {
      * @param search_id is the ID to be found.
      * @param row_num is the sequence number to be reached (0-based). It is also a return parameter that indicates the reached sequence number.
      * @param from_last_search is 1 if the search must be done from the last found position.
+     * @param get_nearest is DO_NOT_GET_NEAREST if False and GET_R_NEAREST if get nearest from right.
      *
      * @return 	GZ_OK
      * 			GZ_PARAMS_ERROR
