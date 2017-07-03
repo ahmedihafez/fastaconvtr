@@ -65,7 +65,7 @@ int main(int argc, const char * argv[]) {
     char file_log[MSP_MAX_FILENAME];
 	
 	FILE *file_input	= 	0;
-	FILE *file_es   	= 	0;
+//	FILE *file_es   	= 	0;
 	FILE *file_output	=	stdout;
 	FILE *file_wcoor    =   0;
     FILE *file_ws   	= 	0;
@@ -73,7 +73,7 @@ int main(int argc, const char * argv[]) {
     FILE *file_logerr   =   stdout;
 
     SGZip file_input_gz;
-    SGZip file_es_gz;
+//  SGZip file_es_gz;
     SGZip file_output_gz;
     SGZip file_wcoor_gz;
     SGZip file_ws_gz;
@@ -171,14 +171,15 @@ int main(int argc, const char * argv[]) {
                         fprintf(stdout,"\n It is not possible to write in the output file %s\n", file_out);
                         exit(1);
                     }
+                    file_output_gz.index = &file_output_gz_index;
+                    /* Here, after openning the GZ file, the index is assigned to its output gz file. */
+                    
                     strcpy(file_log, file_out);
                     strcat(file_log,".log");
                     if( (file_logerr = fzopen( file_log, "w", &file_logerr_gz)) == 0) {
                         fprintf(stdout,"\n It is not possible to write the log file %s.", file_log);
                         exit(1);
                     }
-
-                    file_output_gz.index = &file_output_gz_index;  /* Here, after openning the GZ file, the index is assigned to its output gz file. */
 
                     /*printf("\nOpen log file...");*/
                     fzprintf(file_logerr,&file_logerr_gz,"\nOpen log file...");
@@ -783,8 +784,8 @@ int main(int argc, const char * argv[]) {
                 exit(1);
             }
         }
-        */
         fzclose(file_es, &file_es_gz);
+         */
         /* read coordinates file */
         if( file_Wcoord[0] != '\0' ) {
             if(read_coordinates(file_wcoor,&file_wcoor_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&wgenes,&nwindows,chr_name) == 0) {
@@ -793,24 +794,31 @@ int main(int argc, const char * argv[]) {
             }
             window = -1;
             slide = -1;
+            fzclose(file_wcoor, &file_wcoor_gz);
         }
-        fzclose(file_wcoor, &file_wcoor_gz);
         /* read mask coordinates file */
         if( file_masked[0] != '\0' ) {
             if(read_coordinates(file_msk,&file_msk_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,&masked_wgenes,&masked_nwindows,chr_name) == 0) {
                 fzprintf(file_logerr,&file_logerr_gz,"Error processing masked coordinates file %s\n", file_masked);
                 exit(1);
             }
+            fzclose(file_msk, &file_msk_gz);
         }
-        fzclose(file_msk, &file_msk_gz);
 
         if(format[0] == 't')
             tfasta = 1;
-        if(read_fasta(file_input,&file_input_gz,file_output,&file_output_gz, file_logerr, &file_logerr_gz,input_format,&nsam,&lenR,&lenT,&lenP,&lenS,&vector_pos,&matrix_pol,ploidy,gfffiles,
-                      file_GFF,subset_positions,genetic_code,criteria_transcript,format,outgroup,
-                      &vector_sizepos,&svratio,&summatrix_sizepos,&nmissing,&mis_pos,fnut,&CpG,&GCs,wV,&svp,&pwmatrix_miss,file_es,&file_es_gz,file_in,file_out,refasta,tfasta,
+        if(read_fasta(file_input,&file_input_gz,file_output,&file_output_gz,file_logerr,
+                      &file_logerr_gz,input_format,&nsam,&lenR,&lenT,&lenP,&lenS,&vector_pos,
+                      &matrix_pol,ploidy,gfffiles,file_GFF,subset_positions,genetic_code,
+                      criteria_transcript,format,outgroup,&vector_sizepos,&svratio,
+                      &summatrix_sizepos,&nmissing,&mis_pos,fnut,&CpG,&GCs,wV,&svp,&pwmatrix_miss,
+                      /*file_es,&file_es_gz,*/file_in,file_out,refasta,tfasta,
                       Pp,&CpGp,&Ap,&Cp,&Gp,&Tp,&GCp,&sort_nsam,&int_total_nsam_order,vint_perpop_nsam,
-                      npops,&sum_sam, &nsites1_pop, &nsites2_pop, &nsites3_pop, &nsites1_pop_outg, &nsites2_pop_outg, &nsites3_pop_outg,wP,wPV,file_ws,&file_ws_gz,wgenes,nwindows,include_unknown,masked_wgenes,masked_nwindows,chr_name,i,nscaffolds) == 0) {
+                      npops,&sum_sam, &nsites1_pop, &nsites2_pop, &nsites3_pop,
+                      &nsites1_pop_outg, &nsites2_pop_outg, &nsites3_pop_outg,
+                      wP,wPV,file_ws,&file_ws_gz,wgenes,nwindows,include_unknown,
+                      masked_wgenes,masked_nwindows,
+                      chr_name,i,nscaffolds) == 0) {
             fzprintf(file_logerr,&file_logerr_gz,"Error processing input data.\n");
             exit(1);
         }
@@ -820,33 +828,37 @@ int main(int argc, const char * argv[]) {
                 slide = lenR;
                 window = lenR;
             }
-            if(write_msfile(file_output,&file_output_gz, file_logerr, &file_logerr_gz, nsam,lenR,lenT,lenP,lenS,vector_pos,vector_sizepos,matrix_pol,slide,window,svratio,
-                            summatrix_sizepos,nmissing,mis_pos,format,fnut,Physical_length,CpG,GCs,wV,nV,svp,pwmatrix_miss,tfasta,
-                            Pp,CpGp,Ap,Cp,Gp,Tp,GCp,wgenes,nwindows,vint_perpop_nsam,npops, sum_sam,
-                            nsites1_pop, nsites2_pop, nsites3_pop, nsites1_pop_outg, nsites2_pop_outg, nsites3_pop_outg,outgroup) == 0) {
+            if(write_msfile(file_output,&file_output_gz,file_logerr,&file_logerr_gz,
+                            nsam,lenR,lenT,lenP,lenS,vector_pos,vector_sizepos,matrix_pol,
+                            slide,window,svratio,summatrix_sizepos,nmissing,mis_pos,format,
+                            fnut,Physical_length,CpG,GCs,wV,nV,svp,pwmatrix_miss,tfasta,
+                            Pp,CpGp,Ap,Cp,Gp,Tp,GCp,wgenes,nwindows,vint_perpop_nsam,npops,sum_sam,
+                            nsites1_pop, nsites2_pop,nsites3_pop,
+                            nsites1_pop_outg,nsites2_pop_outg,nsites3_pop_outg,
+                            outgroup) == 0) {
                 fzprintf(file_logerr,&file_logerr_gz,"Error printing %s ms file.\n",msformat);
                 exit(1);
             }
+            /*
             if(format[0] == 'e' || format[0] == 'x') free(mis_pos);
             free(fnut);
-
             free(sort_nsam);
-            
+            */
         }
         /*free all arrays*/
         if(file_wcoor) free(wgenes);
         if(file_msk) free(masked_wgenes);
-        if(file_ws || file_es) free(wP);
-        if(file_ws || file_es) free(wPV);
+        if(file_ws/* || file_es*/) free(wP);
+        if(file_ws/* || file_es*/) free(wPV);
         if(file_ws) free(wV);
-        if(file_es) free(Pp);
+//        if(file_es) free(Pp);
         free(vector_sizepos);
     }
     
 	/*!added. Here, we ensure that all files are closed before exiting */
 	fzclose(file_output, &file_output_gz);
 	fzclose(file_input, &file_input_gz);
-    fzclose(file_ws, &file_ws_gz);
+    if(file_ws) fzclose(file_ws, &file_ws_gz);
 
     fzprintf(file_logerr,&file_logerr_gz,"\nProgram Ended\n");
     fzclose(file_logerr, &file_logerr_gz);
@@ -855,7 +867,11 @@ int main(int argc, const char * argv[]) {
         free(chr_name_array[i]);
     }
     free(chr_name_array);
-    
+    free(vint_perpop_nsam);
+    free(fnut);
+    free(sort_nsam);
+    free(f);
+
     /*
      * Test the just created GZ and INDEX files:
      * -----------------------------------------

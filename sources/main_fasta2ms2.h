@@ -32,7 +32,7 @@ extern "C" {
 				   int gfffiles, char *name_fileinputgff, char *subset_positions, 
 				   char *genetic_code, char *criteria_transcript, char *format, int outgroup_presence,
 				   double **matrix_sizepos, float *svratio, float *summatrix_sizepos,long int *nmissing, int **mis_pos, float *fnut, 
-				   float *CpG, float *GCs, float *wV, int **svp, float ***pwmatrix_miss, FILE *file_es, SGZip *file_es_gz, char *file_in, char *file_out,int refasta,int tfasta,
+				   float *CpG, float *GCs, float *wV, int **svp, float ***pwmatrix_miss/*, FILE *file_es, SGZip *file_es_gz*/, char *file_in, char *file_out,int refasta,int tfasta,
 				   long int *Pp,int **CpGp,int **Ap,int **Cp,int **Gp,int **Tp,int **GCp,int **sort_nsam, int *int_total_nsam_order,int *nsamuser,int npops, double ***sum_sam,
 				   double ***nsites1_pop,double ***nsites2_pop,double ***nsites3_pop,double ***nsites1_pop_outg,double ***nsites2_pop_outg,double ***nsites3_pop_outg,float *wP,float *wPV,FILE *file_ws, SGZip *file_ws_gz, long int *wgenes, long int nwindows,int include_unknown,long int *masked_wgenes, long int masked_nwindows, char *chr_name,int first,int nscaffolds);
 	

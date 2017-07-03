@@ -7,6 +7,7 @@
  */
 
 #include "read_fasta.h"
+int file_es = 0;
 
 int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip *file_output_gz,
                FILE *file_logerr, SGZip *file_logerr_gz, char *input_format,int *nsam,
@@ -17,7 +18,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			   double **matrix_sizepos, float *svratio,float *summatrix_sizepos,long int *nmissing,
                int **mis_pos, float *fnut,
 			   float *CpG, float *GCs, float *wV, int **svp, float ***pwmatrix_miss,
-               FILE *file_es, SGZip *file_es_gz, char *file_in, char *file_out,int refasta,int tfasta,
+               /*FILE *file_es, SGZip *file_es_gz,*/ char *file_in, char *file_out,int refasta,int tfasta,
 			   long int *Pp,int **CpGp,int **Ap,int **Cp,int **Gp,int **Tp,int **GCp,int **sort_nsam,
                int *int_total_nsam_order,int *nsamuser,int npops, double ***sum_sam,
 			   double ***nsites1_pop,double ***nsites2_pop,double ***nsites3_pop,double ***nsites1_pop_outg,
@@ -799,7 +800,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
             if((first == nscaffolds-1) && (gfffiles == 1 || file_es != 0))
                 fzclose(file_weights,&file_weights_gz);
 		}
-		if(format[0] == 't' || format[0] == 'f' || format[0] == '0') 
+
+        for(x=0;x<n_samp;x++) free(names2[x]);
+        free(names2);
+
+        if(format[0] == 't' || format[0] == 'f' || format[0] == '0')
 			return(1);
 		
 		/*END PRINT TFASTA*/
