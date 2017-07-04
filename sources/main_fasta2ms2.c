@@ -81,7 +81,7 @@ int main(int argc, const char * argv[]) {
     SGZip file_logerr_gz;
 
     struct SGZIndex file_output_gz_index;          /* This is the index for the output gz file. */
-
+    init_gzindex_structure(&file_output_gz_index); /* IMPORTANT TO INITIALIZE!*/
 
 	/* GFF variables */
 	int 	gfffiles			= 0;
