@@ -853,6 +853,36 @@ int main(int argc, const char * argv[]) {
         if(file_ws) free(wV);
 //        if(file_es) free(Pp);
         free(vector_sizepos);
+        if(format[0] == 'm') {
+            free(matrix_pol);
+            free(vector_pos);
+            free(mis_pos);
+            free(CpGp);
+            free(Tp);
+            free(Ap);
+            free(Cp);
+            free(Gp);
+            free(GCp);
+            free(svp);
+            for(x=0;x<lenR;x++) {
+                free(nsites1_pop[x]);
+                free(nsites2_pop[x]);
+                free(nsites3_pop[x]);
+                free(nsites1_pop_outg[x]);
+                free(nsites2_pop_outg[x]);
+                free(nsites3_pop_outg[x]);
+                free(sum_sam[x]);
+                free(pwmatrix_miss[x]);
+            }
+            free(nsites1_pop);
+            free(nsites2_pop);
+            free(nsites3_pop);
+            free(nsites1_pop_outg);
+            free(nsites2_pop_outg);
+            free(nsites3_pop_outg);
+            free(sum_sam);
+            free(pwmatrix_miss);
+        }
     }
     
 	/*!added. Here, we ensure that all files are closed before exiting */

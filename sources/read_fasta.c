@@ -602,7 +602,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                         memset(file_weights_char, 0, MSP_MAX_FILENAME);
                         if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
                         else strcpy(file_weights_char, file_out);
-                        sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,(npops>0?npops:1),nsamtot);
+                        //sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,(npops>0?npops:1),nsamtot);
+                        char chtemp[MSP_MAX_FILENAME];
+                        sprintf(chtemp,"npops%d_nsam%d",(npops>0?npops:1),nsamtot);
+                        strcat(file_weights_char,"_");
+                        strcat(file_weights_char,chtemp);
                         if(gfffiles == 1) {
                             strcat(file_weights_char,"_");
                             strcat(file_weights_char,subset_positions);
@@ -707,7 +711,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                     memset(file_weights_char, 0, MSP_MAX_FILENAME);
                     if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
                     else strcpy(file_weights_char, file_out);
-                    sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,(npops>0?npops:1),nsamtot);
+                    //sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,(npops>0?npops:1),nsamtot);
+                    char chtemp[MSP_MAX_FILENAME];
+                    sprintf(chtemp,"npops%d_nsam%d",(npops>0?npops:1),nsamtot);
+                    strcat(file_weights_char,"_");
+                    strcat(file_weights_char,chtemp);
                     if(gfffiles == 1) {
                         strcat(file_weights_char,"_");
                         strcat(file_weights_char,subset_positions);
@@ -804,8 +812,10 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
         for(x=0;x<n_samp;x++) free(names2[x]);
         free(names2);
 
-        if(format[0] == 't' || format[0] == 'f' || format[0] == '0')
-			return(1);
+        if(format[0] == 't' || format[0] == 'f' || format[0] == '0') {
+            free(DNA_matr2);
+            return(1);
+        }
 		
 		/*END PRINT TFASTA*/
 		/*END PRINT TFASTA*/
@@ -827,7 +837,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
         if(file_out[0]=='\0') strcpy(mask_name, file_in);
         else strcpy(mask_name, file_out);
         if (npops == 0) npops = 1;
-        sprintf(mask_name,"%s_npops%d_nsam%d",mask_name,npops,nsamtot);
+        //sprintf(mask_name,"%s_npops%d_nsam%d",mask_name,npops,nsamtot);
+        char chtemp[MSP_MAX_FILENAME];
+        sprintf(chtemp,"npops%d_nsam%d",(npops>0?npops:1),nsamtot);
+        strcat(mask_name,"_");
+        strcat(mask_name,chtemp);
         if(gfffiles == 1) {
             strcat(mask_name,"_");
             strcat(mask_name,subset_positions);
@@ -1014,16 +1028,17 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 		}
 
         /*function to analyze all data*/
-		if(get_obsstats_mod(file_output,file_output_gz,file_logerr,file_logerr_gz,n_samp,n_site,length_al_real,DNA_matr2,*matrix_sizepos,matrix_segrpos,matrix_pol,matrix_pos,length_al,
-							length_seg,include_unknown,outgroup_presence,svratio,nmissing,format,nsamuser,npops,*sum_sam,svp,
-							*pwmatrix_miss,CpG, *CpGp, GCs, *Tp, *Cp, *Gp, *Ap,*GCp, *nsites1_pop,
-							*nsites2_pop,*nsites3_pop,*nsites1_pop_outg,*nsites2_pop_outg,*nsites3_pop_outg) == 0) {
+		if(get_obsstats_mod(file_output,file_output_gz,file_logerr,file_logerr_gz,n_samp,n_site,
+                            length_al_real,DNA_matr2,*matrix_sizepos,matrix_segrpos,matrix_pol,matrix_pos,
+                            length_al,length_seg,include_unknown,outgroup_presence,svratio,nmissing,format,
+                            nsamuser,npops,*sum_sam,svp,*pwmatrix_miss,CpG, *CpGp, GCs, *Tp, *Cp, *Gp, *Ap,*GCp,
+                            *nsites1_pop,*nsites2_pop,*nsites3_pop,*nsites1_pop_outg,*nsites2_pop_outg,*nsites3_pop_outg) == 0) {
 			for(x=0;x<n_sam;x++) free(names[x]);
 			free(names);
 			free(DNA_matr);
 			free(DNA_matr2);
 			free(*matrix_sizepos);
-			free(matrix_segrpos);			
+			free(matrix_segrpos);
 			return(0);
 		}
         /*
@@ -1035,7 +1050,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
             memset(file_weights_char, 0, MSP_MAX_FILENAME);
             if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
             else strcpy(file_weights_char, file_out);
-            sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,npops,nsamtot);
+            //sprintf(file_weights_char,"%s_npops%d_nsam%d",file_weights_char,npops,nsamtot);
+            char chtemp[MSP_MAX_FILENAME];
+            sprintf(chtemp,"npops%d_nsam%d",(npops>0?npops:1),nsamtot);
+            strcat(file_weights_char,"_");
+            strcat(file_weights_char,chtemp);
             strcat(file_weights_char,"_");
             strcat(file_weights_char,subset_positions);
             strcat(file_weights_char,"_");
@@ -1065,6 +1084,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
             fzclose(file_weights,&file_weights_gz);
         }
         *lenR = n_site;
+        free(DNA_matr2);
 	}
 	
 	return(1);

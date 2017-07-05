@@ -93,42 +93,51 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 			fzprintf(file_output,file_output_gz," n_samples: %d .",n_samp);
 			fzprintf(file_output,file_output_gz," NOT ENOUGH SAMPLES.");
 		}
+        free(initsq1);
 		return(0);
 	}
 	
 	/* 2D (really 1D) matrix of polymorphisms */
 	if((*matrix_pol = (char *) calloc (maxnsamp*maxbialsites, sizeof(char))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.3");
+        free(initsq1);
 		return(0);
 	}
 	/* indicates the position and the frequency */
 	if((*matrix_pos = (long int *) calloc (maxbialsites, sizeof(long int))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.4");
+        free(initsq1);
 		return(0);
 	}
 	/*pointer to the samples of a given position*/
  	if((colsam = (char *) calloc (maxnsamp, sizeof(char))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
  	if((varnt = (char *) calloc (4, sizeof(char))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
  	if((varmis = (char *) calloc (2, sizeof(char))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
  	if((nvar = (int *) calloc (4, sizeof(int))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
  	if((nmis = (int *) calloc (2, sizeof(int))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
  	if((nm = (int *) calloc (1,sizeof(int))) == 0) {
 		fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.col");
+        free(initsq1);
 		return(0);
 	}
 	
@@ -413,10 +422,12 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 					maxbialsites += 128;
 					if((*matrix_pol = realloc (*matrix_pol, maxnsamp*maxbialsites*sizeof(char))) == 0) {
 						fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.11");
+                        free(initsq1);
 						return(0);
 					}
 					if((*matrix_pos = realloc(*matrix_pos,(maxbialsites)*sizeof(long int))) == 0) {
 						fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.12");
+                        free(initsq1);
 						return(0);
 					}
 				}
@@ -524,10 +535,12 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 							maxbialsites += 128;
 							if((*matrix_pol = realloc (*matrix_pol, maxnsamp*maxbialsites*sizeof(char))) == 0) {
 								fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.11");
+                                free(initsq1);
 								return(0);
 							}
 							if((*matrix_pos = realloc(*matrix_pos,(maxbialsites)*sizeof(long int))) == 0) {
 								fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.12");
+                                free(initsq1);
 								return(0);
 							}
 						}
@@ -643,10 +656,12 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 						maxbialsites += 128;
 						if((*matrix_pol = realloc (*matrix_pol, maxnsamp*maxbialsites*sizeof(char))) == 0) {
 							fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.11");
+                            free(initsq1);
 							return(0);
 						}
 						if((*matrix_pos = realloc(*matrix_pos,(maxbialsites)*sizeof(long int))) == 0) {
 							fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsstat.12");
+                            free(initsq1);
 							return(0);
 						}
 					}
@@ -659,6 +674,7 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 	}
  	if(_sites == (double)0) {
 		fzprintf(file_output,file_output_gz,"Not valid sites available in this file: ");
+        free(initsq1);
         return 0;
     }
 	
@@ -673,6 +689,7 @@ int get_obsstats_mod(FILE *file_output, SGZip *file_output_gz, FILE *file_logerr
 	free(varnt);
 	free(varmis);
 	free(nm);
+    free(initsq1);
 	
 	return 1;
 }
