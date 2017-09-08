@@ -656,7 +656,9 @@ int main(int argc, const char * argv[]) {
         printf("\nError: the name of the scaffold (option -n) must be defined\n");
         exit(1);
     }
-    
+    if(vint_perpop_nsam[0]==0) {
+        npops = 1;
+    }
     
     /*Define arrays and vectors*/
     
@@ -944,9 +946,9 @@ void usage(void)
 	printf(FASTA2MS2);
 	printf("\nFlags:\n");
     printf("      -F [input format file: f (fasta), t (tfasta)]\n");/*fasta or tfasta formats are only available*/
-    printf("      -i [path and name of the input file (text or gz)]\n");
+    printf("      -i [path and name of the input file (text or gz indexed)]\n");
     printf("      -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]\n");
-    printf("      -o [path and name of the output file (preferentially .gz except ms files)]\n");
+    printf("      -o [path and name of the output file (include extension .gz except ms files)]\n");
     printf("      -n [name of a single scaffold to analyze. For input+output tfa can be a list separated by commas(ex. -n chr1,chr2,chr3]\n");
     printf("   OPTIONAL PARAMETERS:\n");
     printf("      -h [help and exit]\n");

@@ -500,7 +500,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			/*modify values in matrix_sizepos*/
 			/*also modify values in matrix_segrpos, only for syn/nsyn variants (that is, in case counting syn positions but the variant is nsyn, reject it)*/
 			if(use_gff(name_fileinputgff,subset_positions,genetic_code,*matrix_sizepos,n_samp,n_site,DNA_matr2,matrix_segrpos,
-					   file_output/*,mainargc*/,file_output_gz,file_logerr,file_logerr_gz,include_unknown,criteria_transcript,output,outgroup_presence,*nsam-1,chr_name,first) == 0) {
+					   file_output/*,mainargc*/,file_output_gz,file_logerr,file_logerr_gz,include_unknown,criteria_transcript,output,outgroup_presence,*nsam-nsamuser[npops-1],chr_name,first) == 0) {
                 /*in case option -G call the start and end of each gene: NOT DONE YET*/
 				/*if error realloc DNA_matr*/
 				for(x=0;x<n_sam;x++) free(names[x]);

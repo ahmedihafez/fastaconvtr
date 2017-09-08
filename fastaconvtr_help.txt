@@ -1,10 +1,10 @@
-#fastaconvtr v0.1beta (20170627) Sebastian E. Ramos-Onsins.
+#fastaconvtr v0.1beta (20170908) Sebastian E. Ramos-Onsins.
 
 Flags:
       -F [input format file: f (fasta), t (tfasta)]
-      -i [path and name of the input file (text or gz)]
+      -i [path and name of the input file (text or gz indexed)]
       -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]
-      -o [path and name of the output file (preferentially .gz except ms files)]
+      -o [path and name of the output file (include extension .gz except ms files)]
       -n [name of a single scaffold to analyze. For input+output tfa can be a list separated by commas(ex. -n chr1,chr2,chr3]
    OPTIONAL PARAMETERS:
       -h [help and exit]
