@@ -104,9 +104,10 @@ int main(int argc, const char * argv[]) {
 	/* Sum of all nsam of all populations */
 	int int_total_nsam = 0;
     
-    int i,j,k;
-    int nscaffolds;
+    unsigned long i/*,j,k*/;
+    unsigned long nscaffolds;
     char **chr_name_array;
+    char **chr_length_array;
 
     memset( chr_name_all, 0, MSP_MAX_NAME);
 	memset( file_in,  0, MSP_MAX_FILENAME);
@@ -693,8 +694,12 @@ int main(int argc, const char * argv[]) {
     setbuf(file_input,f);
 
    
+    if(read_index_file(chr_name_all,&nscaffolds,&chr_name_array,&chr_length_array)) {
+        printf("\nError reading the scaffold names file %s\n",chr_name_all);
+        exit(1);
+    }
     /*separate all values of the list chr_name_all in chr_name_array: */
-    /* Only do the list if input and output is tfa*/
+    /* Only do the list if input and output is tfa*//*
     nscaffolds = 1;
     if(format[0] == 't' && input_format[0] == 't' ) {
         chr_name_array = (char **)calloc(nscaffolds,sizeof(char *));
@@ -719,6 +724,7 @@ int main(int argc, const char * argv[]) {
         chr_name_array[0] = (char *)calloc(1,sizeof(MSP_MAX_NAME));
         strcpy(chr_name_array[0],chr_name_all);
     }
+    */
     
     /*open the file for weigth for positions, if included*/
     if( file_wps[0] == '\0') {
@@ -949,7 +955,7 @@ void usage(void)
     printf("      -i [path and name of the input file (text or gz indexed)]\n");
     printf("      -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]\n");
     printf("      -o [path and name of the output file (include extension .gz except ms files)]\n");
-    printf("      -n [name of a single scaffold to analyze. For input+output tfa can be a list separated by commas(ex. -n chr1,chr2,chr3]\n");
+    printf("      -n [name of the file containing the name(s) of scaffold(s) and their length (separated by a tab), one per line (ex. fai file)]\n");
     printf("   OPTIONAL PARAMETERS:\n");
     printf("      -h [help and exit]\n");
     printf("      -P [define window lengths in 'physical' positions (1) or in 'effective' positions (0)]. DEFAULT: 1\n");

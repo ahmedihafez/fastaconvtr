@@ -27,7 +27,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
 			double *matrix_sizepos,int n_samp,long int n_site,char *DNA_matr,
 			double *matrix_segrpos,FILE *file_output/*,int mainargc*/,SGZip *file_output_gz, FILE *file_logerr, SGZip *file_logerr_gz, int include_unknown,
 			char *criteria_transcripts, int type_output,/* long int *nmhits, long int *mhitbp,*/
-			int outgroup_presence, int nsamoutg,char *chr_name,int first)
+			int outgroup_presence, int nsamoutg,char *chr_name,unsigned long first)
 {
 	char *row,*f,cstrand[1],cframe[2],aaseq[1],aaput[1];
 	long int i=0;
@@ -35,7 +35,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
     int countpath=0;
     int countpath3=0;
     long int jj,l,j,n,m,nrows,jo,hf1,hf2;
-	char fields[9][1024];
+	char fields[9][SIZE_ROW];
 	struct valuesgff *fieldsgff,*fieldsgff2;
 	char *seqid/*, *fileid*/;
 	double *cmat,*cmatnc,*cmatsil;
@@ -116,7 +116,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
 			fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. use_gff.1 \n");
 			return 0; /*error*/
 		}
-		if(!(row = (char *)malloc(1024*sizeof(char)))) {
+		if(!(row = (char *)malloc(SIZE_ROW*sizeof(char)))) {
 			fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. use_gff.2 \n");
 			return 0; /*error*/
 		}
@@ -134,7 +134,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
             ncountrow += 1;
 			row[i=0] = '\0';
 
-			fzgets(row, 1024*sizeof(char), file_gff, &file_gff_gz);
+			fzgets(row, SIZE_ROW*sizeof(char), file_gff, &file_gff_gz);
 			if(row[i] == '\0' && fzeof(file_gff, &file_gff_gz)) break;
 			/*i=0;*/
 			/*while((row[i] = fzgetc(file_gff,&file_gff_gz)) != 0 && row[i] != 10 && row[i] != 13 && fzeof(file_gff, &file_gff_gz)!= 1) {*/
@@ -147,10 +147,10 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
 			while(/*row[i] == 32 || */row[i] == '\t') {
 				if(row[i] == 10 || row[i] == 13 || row[i] == 0) break;
 				i++;
-				if(i >= 1024) break;
+				if(i >= SIZE_ROW) break;
 			}
 			if(row[i] == '#') continue;
-			if(i >= 1024) continue;
+			if(i >= SIZE_ROW) continue;
 			
 			/*include fields in variables*/
 			j = k = 0;
@@ -158,7 +158,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
 				while(/*row[i] == 32 || */row[i] == '\t') {
 					if(row[i] == 10 || row[i] == 13 || row[i] == 0) break;
 					i++;
-					if(i >= 1024) break;
+					if(i >= SIZE_ROW) break;
 				}
 				k=0;
 				while(/*row[i] != 32 && */row[i] != '\t' && row[i] != 10 && row[i] != 13 && row[i] != 0) {
@@ -166,7 +166,7 @@ int use_gff(char *name_fileinputgff,char *subset_positions,char *genetic_code,
 					k++;
 					if(k >= 256) break;
 					i++;
-					if(i >= 1024) break;
+					if(i >= SIZE_ROW) break;
 				}
 				fields[j][k] = '\0';
 				j++;

@@ -24,7 +24,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			   double ***nsites1_pop,double ***nsites2_pop,double ***nsites3_pop,double ***nsites1_pop_outg,
                double ***nsites2_pop_outg,double ***nsites3_pop_outg,
 			   float *wP,float *wPV, FILE *file_ws, SGZip *file_ws_gz,long int *wgenes, long int nwindows, int include_unknown,
-               long int *masked_wgenes, long int masked_nwindows,char *chr_name,int first,int nscaffolds)
+               long int *masked_wgenes, long int masked_nwindows,char *chr_name,unsigned long first,unsigned long nscaffolds)
 {	
 	/*
 	 file_input: fasta file, tfasta gzip or not
@@ -162,7 +162,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                 return(0);
             }
         }
-        if((DNA_matr = (char *)calloc(10000,sizeof(char))) == 0) {
+        if((DNA_matr = (char *)calloc(1e6,sizeof(char))) == 0) {
             for(x=0;x<128;x++) free(names[x]);
             free(names);
             fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. read_fasta.3 \n");
@@ -500,7 +500,8 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			/*modify values in matrix_sizepos*/
 			/*also modify values in matrix_segrpos, only for syn/nsyn variants (that is, in case counting syn positions but the variant is nsyn, reject it)*/
 			if(use_gff(name_fileinputgff,subset_positions,genetic_code,*matrix_sizepos,n_samp,n_site,DNA_matr2,matrix_segrpos,
-					   file_output/*,mainargc*/,file_output_gz,file_logerr,file_logerr_gz,include_unknown,criteria_transcript,output,outgroup_presence,*nsam-nsamuser[npops-1],chr_name,first) == 0) {
+					   file_output/*,mainargc*/,file_output_gz,file_logerr,file_logerr_gz,include_unknown,criteria_transcript,
+                       output,outgroup_presence,*nsam-nsamuser[npops-1],chr_name,first) == 0) {
                 /*in case option -G call the start and end of each gene: NOT DONE YET*/
 				/*if error realloc DNA_matr*/
 				for(x=0;x<n_sam;x++) free(names[x]);
@@ -1155,17 +1156,17 @@ int var_char(FILE *file_input, SGZip *file_input_gz,FILE *file_logerr, SGZip *fi
     if(aa == 1) {
 		/*Cp = 0.0;*/
         while(bb == 0) {
-            dd = (long int)floor((double)*count/(double)10000);
-            ee = (double)*count/(double)10000;
+            dd = (long int)floor((double)*count/(double)1e6);
+            ee = (double)*count/(double)1e6;
             
             if(dd == ee) {
 				/*
-                if((t=(((long int)dd+(long int)1)*(long int)10000)) > 2147483647) {
+                if((t=(((long int)dd+(long int)1)*(long int)1e6)) > 2147483647) {
                     puts("Error: too much positions.\n");
                     return(0);
                 }
 				*/
-                if((*DNA_matr = realloc(*DNA_matr,((long int)dd+(long int)1)*(long int)10000*sizeof(char))) == 0) {
+                if((*DNA_matr = realloc(*DNA_matr,((long int)dd+(long int)1)*(long int)1e6*sizeof(char))) == 0) {
                     puts("Error: realloc error varchar.1\n");
                     return(0);
                 }    
@@ -1723,7 +1724,7 @@ int read_coordinates(FILE *file_wcoor, SGZip *file_wcoor_gz, FILE *file_output, 
     return 1;
 }
 
-int read_weights_positions_file(FILE *file_ws, SGZip *file_ws_gz,FILE *file_output, SGZip *file_output_gz, FILE *file_logerr, SGZip *file_logerr_gz, float **wP, float **wPV, float **wV,char *chr_name,int first) {
+int read_weights_positions_file(FILE *file_ws, SGZip *file_ws_gz,FILE *file_output, SGZip *file_output_gz, FILE *file_logerr, SGZip *file_logerr_gz, float **wP, float **wPV, float **wV,char *chr_name,unsigned long first) {
     
 	/*!--- Not used long int position; */
     static char *valn=0;
@@ -2111,7 +2112,7 @@ int read_weights_file(FILE *file_es, SGZip *file_es_gz, FILE *file_output, SGZip
 }
 
 
-int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_logerr, SGZip *file_logerr_gz, long int init_site,long int end_site,int *n_sam, long int *n_site, char ***names, char **DNA_matr,char *chr_name, int first)
+int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_logerr, SGZip *file_logerr_gz, long int init_site,long int end_site,int *n_sam, long int *n_site, char ***names, char **DNA_matr,char *chr_name, unsigned long first)
 {
     static int c[1];
     static char line[32767*2];
@@ -2128,7 +2129,9 @@ int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_loge
     static int nseq=0;
     int x;
     long int end_position=0;
-    long int dd,ee,count;
+    long int dd=0;
+    long int count;
+    double ee;
     
     /*if names and number of samples are defined then skip the definition of names*/
     if(first == 0) {
@@ -2165,7 +2168,7 @@ int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_loge
                             puts("\n Sorry, no more than 32767 samples are allowed.");
                             return 0;
                         }
-                        if ((*names = (char **)realloc(names,maxsam*sizeof(char *))) == 0) {
+                        if ((*names = (char **)realloc(*names,maxsam*sizeof(char *))) == 0) {
                             puts("\nError: memory not reallocated. assigna.1 \n");
                             return(0);
                         }
@@ -2284,8 +2287,34 @@ int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_loge
     col = 0;
     count=0;
     while (strcmp(line, chr_name) == 0 && *n_site < end_position) {
-        chr_defined = 0;
-        position_defined = 0;
+        if(position > *n_site) {
+            while(position > *n_site+1) {
+                /*include as many missing rows as positions until arriving to 'positions'*/
+                col = 0;
+                while(col < *n_sam) {
+                    DNA_matr[0][(((long int)nseq*(unsigned long)*n_site)+(unsigned long)col)] = '5';
+                    col += 1;
+                    count += 1;
+                    /*realloc DNAmatr if nnecessary*/
+                    dd = (long int)floor((double)count/(double)(1e6));
+                    ee = (double)count/(double)1e6;
+                    if((double)dd == ee/* && dd>0*/) {
+                        if((*DNA_matr = realloc(*DNA_matr,((long int)/*count+1*//**/dd+(long int)1/**/)/**/*(long int)1e6* /**/sizeof(char))) == 0) {
+                            puts("Error: realloc error varchar.1\n");
+                            return(0);
+                        }
+                    }
+                }
+                *n_site += 1;
+                col = 0;
+            }
+            if(end_site == -1) end_position = position + 1;
+            position_defined = 1;
+        }
+        else {
+            chr_defined = 0;
+            position_defined = 0;
+        }
         switch(*c) {
             case 'T':
                 DNA_matr[0][(((long int)nseq*(unsigned long)*n_site)+(unsigned long)col)] = '1';
@@ -2536,10 +2565,11 @@ int function_read_tfasta(FILE *file_input, SGZip *file_input_gz, FILE *file_loge
             }
         }
         /*realloc DNAmatr if nnecessary*/
-        dd = (long int)floor((double)count/(double)10000);
-        ee = (double)count/(double)10000;
-        if(dd == ee && dd>0) {
-            if((*DNA_matr = realloc(*DNA_matr,((long int)dd+(long int)1)*(long int)10000*sizeof(char))) == 0) {
+        dd = (long int)floor((double)count/(double)1e6);
+        ee = (double)count/(double)1e6;
+        if(dd == ee/* && dd>0*/) {
+            if((*DNA_matr = realloc(*DNA_matr,((long int)dd+(long int)1)*(long int)1e6*sizeof(char))) == 0) {
+        //    if((*DNA_matr = realloc(*DNA_matr,((long int)count+1)*sizeof(char))) == 0) {
                 puts("Error: realloc error varchar.1\n");
                 return(0);
             }
@@ -2563,4 +2593,75 @@ int  check_comment(int *c, FILE *file_input, SGZip *file_input_gz) {
         return(0);
     
     return(1);
+}
+
+int read_index_file(char *chr_name_all, unsigned long *nscaffolds,char ***chr_name_array,char ***chr_length_array) {
+    
+    FILE *file_scaffolds;
+    char *buf;
+    int c;
+    int k;
+    
+    *nscaffolds = 1;
+    chr_name_array[0] = (char **)calloc(*nscaffolds,sizeof(char *));
+    chr_name_array[0][0] = (char *)calloc(MSP_MAX_NAME,sizeof(char));
+    chr_length_array[0] = (char **)calloc(*nscaffolds,sizeof(char *));
+    chr_length_array[0][0] = (char *)calloc(MSP_MAX_NAME,sizeof(char));
+    
+    if (!(file_scaffolds = fopen(chr_name_all,"r"))) {
+        printf("Error reading the input file %s\n",chr_name_all);
+        return(1);
+    }
+    if(!(buf = (char *)malloc(BUFSIZ))) {
+        puts("\nError: Not enough memory to read  the input file.\n");
+        return(1);
+    }
+    setbuf(file_scaffolds,buf);
+    c=fgetc(file_scaffolds);
+    while(c != EOF) {
+        k=0;
+        chr_name_array[0][*nscaffolds-1][k] = c; k++;
+        while((c=fgetc(file_scaffolds))!= 9 && c!= 10 && c!=13 && c!=-1 && c!=0 && k<MSP_MAX_NAME-1) {
+            chr_name_array[0][*nscaffolds-1][k] = c; k++;
+        }
+        chr_name_array[0][*nscaffolds-1][k] = '\0';
+        if(c!= 9 && c!= 32) {
+            printf("Error reading the input file %s:\n scaffold (%s) without length information.\n",chr_name_all, chr_name_array[0][*nscaffolds-1]);
+            return(1);
+        }
+        do {
+            c=fgetc(file_scaffolds);
+        }while(!(c!= 9 && c!= 32 && c!= 10 && c!=13 && c!=-1 && c!=EOF));
+        if(c==EOF) {
+            printf("Error reading the input file %s:\n scaffold (%s) without length information.\n",chr_name_all, chr_name_array[0][*nscaffolds-1]);
+            return(1);
+        }
+        k=0;
+        chr_length_array[0][*nscaffolds-1][k] = c; k++;
+        while((c=fgetc(file_scaffolds)) != 9 && c != 32 && c!= 10 && c!=13 && c!=-1 && c!=0 && k<MSP_MAX_NAME-1) {
+            chr_length_array[0][*nscaffolds-1][k] = c; k++;
+        }
+        chr_length_array[0][*nscaffolds-1][k] = '\0';
+        /*check next line, if exist*/
+        if(c==32 || c==9) {
+            do {
+                c=fgetc(file_scaffolds);
+            }while(c!=10 && c!= 13 && c!=EOF);
+        }
+        while(c==10 || c==13) {
+            c=fgetc(file_scaffolds);
+        }
+        if(c==EOF)
+            break;
+        /*if exist, prepare new row in arrays*/
+        *nscaffolds += 1;
+        chr_name_array[0] = (char **)realloc(chr_name_array[0],*nscaffolds*sizeof(char *));
+        chr_name_array[0][*nscaffolds-1] = (char *)calloc(MSP_MAX_NAME,sizeof(char));
+        chr_length_array[0] = (char **)realloc(chr_length_array[0],*nscaffolds*sizeof(char *));
+        chr_length_array[0][*nscaffolds-1] = (char *)calloc(MSP_MAX_NAME,sizeof(char));
+    }
+    fclose(file_scaffolds);
+    free(buf);
+    
+    return(0);
 }
