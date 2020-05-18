@@ -1,11 +1,12 @@
-#fastaconvtr v0.1beta (20181212) Sebastian E. Ramos-Onsins.
+#fastaconvtr v0.1beta (20200518) Sebastian E. Ramos-Onsins.
 
 Flags:
       -F [input format file: f (fasta), t (tfasta)]
       -i [path and name of the input file (text or gz indexed)]
       -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]
-      -o [path and name of the output file (include extension .gz except ms files)]
+      -o [path and name of the output sequence file]
       -n [name of the file containing the name(s) of scaffold(s) and their length (separated by a tab), one per line (ex. fai file)]
+      -e [path and name of the output weights file]
    OPTIONAL PARAMETERS:
       -h [help and exit]
       -P [define window lengths in 'physical' positions (1) or in 'effective' positions (0)]. DEFAULT: 1

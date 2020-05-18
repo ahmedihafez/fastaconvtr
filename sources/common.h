@@ -20,7 +20,7 @@ extern "C" {
 	#include <stdlib.h>
 	#include <math.h>
 	
-	#define FASTA2MS2 "#fastaconvtr v0.1beta (20181212) Sebastian E. Ramos-Onsins.\n"
+	#define FASTA2MS2 "#fastaconvtr v0.1beta (20200518) Sebastian E. Ramos-Onsins.\n"
 
 	#define MSP_MAX_FILENAME			(unsigned long) 4096 /**< @brief Maximum Filename Length allowed */
 	#define MSP_MAX_GFF_WORDLEN         (unsigned long) 20

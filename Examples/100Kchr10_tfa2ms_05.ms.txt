@@ -1,1 +1,48 @@
-#fastaconvtr -F tfasta -f ms -i ./100Kchr10.tfa.gz -o ./100Kchr10_tfa2ms_05.ms.txt -E ./100Kchr10_tfa2ms_04.ms.txt_npops1_nsam42_nonsynonymous_max_ExcludeMissingmhits_NOoutg_ploidy1_WEIGHTS.txt -n ./chr10.txt 
+#fastaconvtr -F tfasta -f ms -i ./100Kchr10.tfa.gz -o ./100Kchr10_tfa2ms_05.ms.txt -E ./100Kchr10_WEIGHTs_tfa2ms_04.txt.gz -n ./chr10.txt -k ./100Kchr10_tfa2ms_05_MASK.txt 
+#fastaconvtr v0.1beta (20200518) Sebastian E. Ramos-Onsins.
+#Data for TOTAL Alignment. format: ms length: 100000 Efflength: 489.43 Booleanlength: 541 NumVariants: 2 nwindows: 1 s/v: NA GfreqT: 0.28 GfreqC: 0.24 GfreqG: 0.22 GfreqA: 0.26 GCs: 0.080 CpGs: 0.015 Cs+Gs: 0.462 
+// 1	100000	489.43
+segsites: 2
+positions: 0.24470000 0.34429000 
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+00
+01
+01
+10
+00
+01
+01
