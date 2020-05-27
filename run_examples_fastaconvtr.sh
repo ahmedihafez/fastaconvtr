@@ -11,44 +11,44 @@ echo ---------------------------------------------------------------------------
 
 echo
 echo fa2tfa.ex01
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10.tfa.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_01.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10.tfa.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_01.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10.tfa.gz -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10.tfa.gz -n ./chr10.txt
 echo
 echo fa2tfa.ex01b masking several regions with Ns
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_01B.tfa.gz -m ./coord_100Kb.txt -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_01b.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_01B.tfa.gz -m ./coord_100Kb.txt -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_01b.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_01B.tfa.gz -m ./coord_100Kb.txt -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_01B.tfa.gz -m ./coord_100Kb.txt -n ./chr10.txt
 echo
 echo fa2tfa.ex02
 echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_02.tfa.gz  -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 1 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz
 ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_02.tfa.gz  -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 1 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz
 echo
 echo fa2tfa.ex03 should give same results than previous
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03.tfa.gz  -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex03.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03.tfa.gz  -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex03.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03.tfa.gz  -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03.tfa.gz  -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt
 echo
 echo fa2tfa.ex02B
 echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_02B.tfa.gz -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 0 -n ./chr10.txt  -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz
 ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_02B.tfa.gz -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 0 -n ./chr10.txt  -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz
 echo
 echo fa2tfa.ex03B should give same results than previous
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03B.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex03b.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03B.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex03b.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03B.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_03B.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_02.txt.gz -n ./chr10.txt
 echo
 echo fa2tfa.ex04
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_04.tfa.gz -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex04.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_04.tfa.gz -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_ex04.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_04.tfa.gz -p 2 -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_04.tfa.gz -p 2 -n ./chr10.txt
 echo
 echo fa2tfa.ex05
 echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_05.tfa.gz -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 1 -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz
 ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_05.tfa.gz -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 1 -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz
 echo
 echo fa2tfa.ex06 should give same results than previous
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_06.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_06.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_06.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz -p 2 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_06.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_06.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz -p 2 -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_06.tfa.gz -E ./100Kchr10_WEIGHTs_fa2tfa_05.txt.gz -p 2 -n ./chr10.txt
 echo
 echo fa2tfa.ex07
-echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_07.tfa.gz -N 2 40 2 -G 1 -u 1 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_07.txt.gz
-../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_07.tfa.gz -N 2 40 2 -G 1 -u 1 -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_07.txt.gz
+echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_07.tfa.gz -N 2 40 2 -G 1 -u 1 -n ./chr10.txt
+../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_07.tfa.gz -N 2 40 2 -G 1 -u 1 -n ./chr10.txt
 echo
 echo fa2tfa.ex08
 echo ../bin/fastaconvtr -F fasta -f tfasta  -i ./100Kchr10.fa -o ./100Kchr10_fa2tfa_08.tfa.gz -N 2 40 2 -G 1 -u 1 -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -n ./chr10.txt -e ./100Kchr10_WEIGHTs_fa2tfa_08.txt.gz
@@ -160,8 +160,8 @@ echo ../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2
 ../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_10.ms.txt -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 0 -p 2 -n ./chr10.txt  -e ./100Kchr10_WEIGHTs_fa2ms_10.txt -k ./100Kchr10_fa2ms_10_MASK.txt > ./100Kchr10_fa2ms_10.ms.txt.log.txt
 echo
 echo fa2ms.ex11 should give same results than previous
-echo ../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_11.ms.txt -e ./100Kchr10_WEIGHTs_fa2ms_10.txt.gz -p 2 -n ./chr10.txt -k ./100Kchr10_fa2ms_11_MASK.txt
-../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_11.ms.txt -e ./100Kchr10_WEIGHTs_fa2ms_10.txt.gz -p 2 -n ./chr10.txt -k ./100Kchr10_fa2ms_11_MASK.txt
+echo ../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_11.ms.txt -p 2 -n ./chr10.txt -k ./100Kchr10_fa2ms_11_MASK.txt
+../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_11.ms.txt -p 2 -n ./chr10.txt -k ./100Kchr10_fa2ms_11_MASK.txt
 echo
 echo fa2ms.ex12
 echo ../bin/fastaconvtr -F fasta -f ms      -i ./100Kchr10.fa -o ./100Kchr10_fa2ms_12.ms.txt -W ./coord_100Kb.txt -p 2 -n ./chr10.txt -k ./100Kchr10_fa2ms_12_MASK.txt

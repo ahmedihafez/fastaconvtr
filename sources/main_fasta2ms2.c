@@ -121,7 +121,6 @@ int main(int argc, const char * argv[]) {
     memset( file_masked, 0, MSP_MAX_FILENAME);
     memset( file_log, 0, MSP_MAX_FILENAME);
 	
-
 	/*defaults*/
 	format[0] = 't';
 	ploidy = 1;
@@ -703,8 +702,8 @@ int main(int argc, const char * argv[]) {
     if(strcmp(chr_name_all,"") == 0 &&
        ((input_format[0] == 'f' && (file_GFF[0] != '\0' || file_effsz[0] != '\0' || file_Wcoord[0] != '\0' || file_wps[0] != '\0' || file_masked[0] != '\0')) ||
         (input_format[0] == 't' || format[0] == 't'))) {
-        fzprintf(file_logerr,&file_logerr_gz,"\nError: the name of the scaffold (option -n) must be defined\n");
-        printf("\nError: the name of the scaffold (option -n) must be defined\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: the name of the scaffold file (option -n) must be defined\n");
+        printf("\nError: the name of the scaffold file (option -n) must be defined\n");
         exit(1);
     }
     if(vint_perpop_nsam[0]==0) {
@@ -1006,7 +1005,6 @@ void usage(void)
     printf("      -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]\n");
     printf("      -o [path and name of the output sequence file]\n");/* (include extension .gz except for ms files)]\n");*/
     printf("      -n [name of the file containing the name(s) of scaffold(s) and their length (separated by a tab), one per line (ex. fai file)]\n");
-    printf("      -e [path and name of the output weights file]\n");
     printf("   OPTIONAL PARAMETERS:\n");
     printf("      -h [help and exit]\n");
     printf("      -P [define window lengths in 'physical' positions (1) or in 'effective' positions (0)]. DEFAULT: 1\n");
@@ -1028,6 +1026,7 @@ void usage(void)
     printf("         [if 'synonymous', 'nonsynonymous', 'silent' add: Genetic_Code: Nuclear_Universal,mtDNA_Drosophila,mtDNA_Mammals,Other]\n");
     printf("         [if 'Other', introduce the single letter code for the 64 triplets in the order UUU UUC UUA UUG ... etc.]\n");
     printf("      -c [in case use coding regions, criteria to consider transcripts (max/min/first/long)]. DEFAULT: long\n");
+    printf("      -e [path and name of the output weights file (mandatory if included GFF)]\n");
     printf("      -E [instead -g & -c, input file with weights for positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     /*printf("      -r [rewrite the fasta file for selected region (not valid for silent/syn/nsyn) (1/0)]\n");*/
     /*printf("      -t [rewrite the fasta transposed file including the weight of each position and variant, if available) (1/0)]\n");*//*new!*/
