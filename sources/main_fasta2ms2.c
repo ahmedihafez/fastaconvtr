@@ -1016,7 +1016,7 @@ void usage(void)
     printf("      -m [masking regions: file indicating the start and the end of regions to be masked by Ns]\n");
     printf("      -E [input file with weights for masking positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     printf("     Outputing ms format:\n");
-    //printf("      -k [path and name of the output mask file]. DEFAULT: 'file_output'_MASK.txt\n");
+    printf("      -k [path and name of the output mask file for ms].\n");// DEFAULT: 'file_output'_MASK.txt\n");
     printf("      -w [window size]. DEFAULT: Total_length\n");
     printf("      -s [slide size]. DEFAULT: Total_length\n");
     printf("     Inputing fasta format:\n");

@@ -1,4 +1,4 @@
-#fastaconvtr v0.1beta (20200518) Sebastian E. Ramos-Onsins.
+#fastaconvtr v0.1beta (20200613) Sebastian E. Ramos-Onsins.
 
 Flags:
 -F [input format file: f (fasta), t (tfasta)]
@@ -15,7 +15,9 @@ OPTIONAL PARAMETERS:
 -G [outgroup included (1) or not (0), last population (1/0)]. DEFAULT: 0
 -u [Missing counted (1) or not (0) in weights given GFF annotation]. DEFAULT: 0
 -m [masking regions: file indicating the start and the end of regions to be masked by Ns]
+-E [input file with weights for masking positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]
 Outputing ms format:
+-k [path and name of the output mask file for ms].
 -w [window size]. DEFAULT: Total_length
 -s [slide size]. DEFAULT: Total_length
 Inputing fasta format:
@@ -26,6 +28,5 @@ Annotation file and weight options:
 [if 'synonymous', 'nonsynonymous', 'silent' add: Genetic_Code: Nuclear_Universal,mtDNA_Drosophila,mtDNA_Mammals,Other]
 [if 'Other', introduce the single letter code for the 64 triplets in the order UUU UUC UUA UUG ... etc.]
 -c [in case use coding regions, criteria to consider transcripts (max/min/first/long)]. DEFAULT: long
--e [path and name of the output weights file (mandatory if include GFF file)]
--E [instead -g & -c, input file with weights for positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]
+-e [path and name of the output weights file (mandatory if included GFF)]
 
