@@ -1014,6 +1014,7 @@ void usage(void)
     printf("      -G [outgroup included (1) or not (0), last population (1/0)]. DEFAULT: 0\n");
     printf("      -u [Missing counted (1) or not (0) in weights given GFF annotation]. DEFAULT: 0\n");
     printf("      -m [masking regions: file indicating the start and the end of regions to be masked by Ns]\n");
+    printf("      -E [input file with weights for masking positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     printf("     Outputing ms format:\n");
     //printf("      -k [path and name of the output mask file]. DEFAULT: 'file_output'_MASK.txt\n");
     printf("      -w [window size]. DEFAULT: Total_length\n");
@@ -1027,7 +1028,6 @@ void usage(void)
     printf("         [if 'Other', introduce the single letter code for the 64 triplets in the order UUU UUC UUA UUG ... etc.]\n");
     printf("      -c [in case use coding regions, criteria to consider transcripts (max/min/first/long)]. DEFAULT: long\n");
     printf("      -e [path and name of the output weights file (mandatory if included GFF)]\n");
-    printf("      -E [instead -g & -c, input file with weights for positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     /*printf("      -r [rewrite the fasta file for selected region (not valid for silent/syn/nsyn) (1/0)]\n");*/
     /*printf("      -t [rewrite the fasta transposed file including the weight of each position and variant, if available) (1/0)]\n");*//*new!*/
     /*printf("\     -e [input file with effect sizes for variants: include two columns with a header, first the physical positions and second the weight]\n");*/
