@@ -24,7 +24,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			   double ***nsites1_pop,double ***nsites2_pop,double ***nsites3_pop,double ***nsites1_pop_outg,
                double ***nsites2_pop_outg,double ***nsites3_pop_outg,
 			   float *wP,float *wPV, FILE *file_ws, SGZip *file_ws_gz,long int *wgenes, long int nwindows, int include_unknown,
-               long int *masked_wgenes, long int masked_nwindows,char *chr_name,unsigned long first,unsigned long nscaffolds, char *file_weights_char, char *mask_name)
+               long int *masked_wgenes, long int masked_nwindows,char *chr_name,unsigned long first,unsigned long nscaffolds)
 {	
 	/*
 	 file_input: fasta file, tfasta gzip or not
@@ -81,7 +81,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
     static SGZip file_weights_gz;
     static struct SGZIndex file_weights_gz_index;          /* This is the index for the output gz file. */
 
-    //char file_weights_char[MSP_MAX_FILENAME];
+    char file_weights_char[MSP_MAX_FILENAME];
 
 	int output = 1;
 	
@@ -126,7 +126,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
     FILE *file_mask;
     SGZip file_mask_gz;
 
-    //char mask_name[MSP_MAX_FILENAME];
+    char mask_name[MSP_MAX_FILENAME];
     char w;
     
     /*printf("\nReading input file...");*/
@@ -599,7 +599,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                     }
                     fzclose(file_fas,file_fas_gz);
                     
-                    if(gfffiles == 1 || file_es != 0) {/*
+                    if(gfffiles == 1 || file_es != 0) {
                         memset(file_weights_char, 0, MSP_MAX_FILENAME);
                         if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
                         else strcpy(file_weights_char, file_out);
@@ -624,7 +624,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                         if(ploidy==1) strcat(file_weights_char,"_ploidy1");
                         if(ploidy==2) strcat(file_weights_char,"_ploidy2");
                         strcat(file_weights_char,"_WEIGHTS.gz");
-                        */if( (file_weights = fzopen( file_weights_char, "w", &file_weights_gz)) == 0) {
+                        if( (file_weights = fzopen( file_weights_char, "w", &file_weights_gz)) == 0) {
                             fzprintf(file_output,file_output_gz,"\n It is not possible to write the weigths file %s.", file_weights_char);
                             exit(1);
                         }
@@ -708,7 +708,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                     /*if(gfffiles == 0 && file_es == 0) */fzprintf(file_fas,file_fas_gz,"#CHR:POSITION\tGENOTYPES");
                     fzprintf(file_fas,file_fas_gz,"\n");
                 }
-                if(gfffiles == 1 || file_es != 0) {/*
+                if(gfffiles == 1 || file_es != 0) {
                     memset(file_weights_char, 0, MSP_MAX_FILENAME);
                     if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
                     else strcpy(file_weights_char, file_out);
@@ -733,7 +733,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
                     if(ploidy==1) strcat(file_weights_char,"_ploidy1");
                     if(ploidy==2) strcat(file_weights_char,"_ploidy2");
                     strcat(file_weights_char,"_WEIGHTS.gz");
-                    */if(first == 0) {
+                    if(first == 0) {
                         if( (file_weights = fzopen( file_weights_char, "w", &file_weights_gz)) == 0) {
                             fzprintf(file_output,file_output_gz,"\n It is not possible to write the weigths file %s.", file_weights_char);
                             exit(1);
@@ -834,7 +834,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
         /*START PRINT MS OUTPUT*/
 		
         /***** print MASK in a file ******/
-        /*memset(mask_name, 0, MSP_MAX_FILENAME);
+        memset(mask_name, 0, MSP_MAX_FILENAME);
         if(file_out[0]=='\0') strcpy(mask_name, file_in);
         else strcpy(mask_name, file_out);
         if (npops == 0) npops = 1;
@@ -858,7 +858,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
         if(outgroup_presence==1) strcat(mask_name,"_outg");
         if(ploidy==1) strcat(mask_name,"_ploidy1");
         if(ploidy==2) strcat(mask_name,"_ploidy2");
-        strcat(mask_name,"_MASK.txt");*/
+        strcat(mask_name,"_MASK.txt");
         if((file_mask = fzopen(mask_name,"w",&file_mask_gz)) == 0) {
             fzprintf(file_logerr,file_logerr_gz,"Error in mask file %s.",mask_name);
             exit(1);
@@ -1047,7 +1047,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			matrix_sizepos[0][xx] *= matrix_segrpos[xx]; 
 		}
         */
-        if(gfffiles == 1) {/*
+        if(gfffiles == 1) {
             memset(file_weights_char, 0, MSP_MAX_FILENAME);
             if(file_out[0]=='\0') strcpy(file_weights_char, file_in);
             else strcpy(file_weights_char, file_out);
@@ -1066,7 +1066,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
             if(outgroup_presence==1) strcat(file_weights_char,"_outg");
             if(ploidy==1) strcat(file_weights_char,"_ploidy1");
             if(ploidy==2) strcat(file_weights_char,"_ploidy2");
-            strcat(file_weights_char,"_WEIGHTS.gz");*/
+            strcat(file_weights_char,"_WEIGHTS.gz");
             if( (file_weights = fzopen( file_weights_char, "w", &file_weights_gz)) == 0) {
                 fzprintf(file_output,file_output_gz,"\n It is not possible to write the weigths file %s.", file_weights_char);
                 exit(1);
@@ -1724,7 +1724,8 @@ int read_coordinates(FILE *file_wcoor, SGZip *file_wcoor_gz, FILE *file_output, 
     return 1;
 }
 
-int read_weights_positions_file(FILE *file_ws, SGZip *file_ws_gz,FILE *file_output, SGZip *file_output_gz, FILE *file_logerr, SGZip *file_logerr_gz, float **wP, float **wPV, float **wV,char *chr_name,unsigned long i) {
+int read_weights_positions_file(FILE *file_ws, SGZip *file_ws_gz,FILE *file_output, SGZip *file_output_gz, FILE *file_logerr, SGZip *file_logerr_gz, float **wP, float **wPV, float **wV,char *chr_name,unsigned long first) {
+    
 	/*!--- Not used long int position; */
     static char *valn=0;
     long int dd;
@@ -1757,7 +1758,7 @@ int read_weights_positions_file(FILE *file_ws, SGZip *file_ws_gz,FILE *file_outp
             fzprintf(file_logerr,file_logerr_gz,"\nError: memory not reallocated. get_obsdata.34 \n");
             return(0);
         }
-        if(i == 0) {
+        if(first == 0) {
             c = fzgetc(file_ws, file_ws_gz);
             valn[0] = c;
             /*exclude header*/

@@ -63,8 +63,6 @@ int main(int argc, const char * argv[]) {
     char file_wps[MSP_MAX_FILENAME];
     char file_masked[MSP_MAX_FILENAME];
     char file_log[MSP_MAX_FILENAME];
-    char file_weights_char[MSP_MAX_FILENAME];
-    char mask_name[MSP_MAX_FILENAME];
 	
 	FILE *file_input	= 	0;
 //	FILE *file_es   	= 	0;
@@ -121,6 +119,7 @@ int main(int argc, const char * argv[]) {
     memset( file_masked, 0, MSP_MAX_FILENAME);
     memset( file_log, 0, MSP_MAX_FILENAME);
 	
+
 	/*defaults*/
 	format[0] = 't';
 	ploidy = 1;
@@ -168,14 +167,13 @@ int main(int argc, const char * argv[]) {
                     break;
                 case 'o' : /* output file */
                     arg++;
-                    strcpy( file_out, argv[arg] );/*
-                    if(format[0] == 't' || format[0] == 'f') strcat(file_out,".gz");
+                    strcpy( file_out, argv[arg] );
                     if( (file_output = fzopen( file_out, "w", &file_output_gz)) == 0) {
                         fprintf(stdout,"\n It is not possible to write in the output file %s\n", file_out);
                         exit(1);
                     }
                     file_output_gz.index = &file_output_gz_index;
-                    // Here, after openning the GZ file, the index is assigned to its output gz file
+                    /* Here, after openning the GZ file, the index is assigned to its output gz file. */
                     
                     strcpy(file_log, file_out);
                     strcat(file_log,".log");
@@ -184,10 +182,10 @@ int main(int argc, const char * argv[]) {
                         exit(1);
                     }
 
-                    //printf("\nOpen log file...");
+                    /*printf("\nOpen log file...");*/
                     fzprintf(file_logerr,&file_logerr_gz,"\nOpen log file...");
-                    */break;
-                case 'F' : /* input format: fa or tfa */
+                    break;
+                case 'F' : /* F fa or tfa */
                     arg++;
                     input_format[0] = argv[arg][0];
                     if(input_format[0] == 'f') strcpy(input_format,"fasta\0");
@@ -567,28 +565,17 @@ int main(int argc, const char * argv[]) {
 					arg++;
 					strcpy(file_Wcoord, argv[arg] );					
 					break;
-                case 'E' : /*file with the weight for each position (input)*/
+                case 'E' : /*file with the weight for each position */
                     arg++;
                     strcpy(file_wps, argv[arg]);
                     break;
-				case 'e' : /*file with the weight for each positions (output)*/
+				case 'e' : /*file with the effect size of each variant */ /*NOT YET INCLUDED IN THE PROGRAM!!!!!*/
 					arg++;
-                    strcpy(file_weights_char, argv[arg]);
-                    if(strstr(file_weights_char, ".gz")==0)
-                        strcat(file_weights_char,".gz"); /*include extension .gz!*/
-                    break;
-                case 'z':
-                    /*file with the effect size of each variant */ /*NOT YET INCLUDED IN THE PROGRAM!!!!!*/
-                    arg++;
 					strcpy(file_effsz, argv[arg]);
 					break;
                 case 'm' : /* file with the coordinates of each window [init end] to be masked by Ns*/
                     arg++;
                     strcpy(file_masked, argv[arg] );
-                    break;
-                case 'k' : /* output mask file (for ms)*/
-                    arg++;
-                    strcpy(mask_name, argv[arg] );
                     break;
                 case 'n' : /* name of the scaffold to analyze*/
                     arg++;
@@ -616,33 +603,7 @@ int main(int argc, const char * argv[]) {
     # [-f tfasta] + [-w -s]
     # [-f fasta]  + [-w -s]
     # [-W] + [-w -s]
-    */
-    
-    /*******************************/
-    /* open output file, indexing, gzipping and creating log file */
-    /*******************************/
-
-    if(format[0] == 't' || format[0] == 'f') {
-        if(strstr(file_out, ".gz")==0)
-            strcat(file_out,".gz"); /*include extension .gz!*/
-    }
-    if( (file_output = fzopen( file_out, "w", &file_output_gz)) == 0) {
-        fprintf(stdout,"\n It is not possible to write in the output file %s\n", file_out);
-        exit(1);
-    }
-    file_output_gz.index = &file_output_gz_index;
-    /* Here, after openning the GZ file, the index is assigned to its output gz file. */
-    strcpy(file_log, file_out);
-    strcat(file_log,".log");
-    if( (file_logerr = fzopen( file_log, "w", &file_logerr_gz)) == 0) {
-        fprintf(stdout,"\n It is not possible to write the log file %s.", file_log);
-        exit(1);
-    }
-    /*printf("\nOpen log file...");*/
-    fzprintf(file_logerr,&file_logerr_gz,"\nOpen log file...");
-
-    /*******************************/
-    
+     */
     if(input_format[0] != 'f' && ploidy != 1) {
         fzprintf(file_logerr,&file_logerr_gz,"\n the option -p 2 is only available with fasta IUPAC input format");
         printf("\nError: The option -p 2 is only available with fasta IUPAC input format\n");
@@ -675,16 +636,6 @@ int main(int argc, const char * argv[]) {
         printf("\nError: The options -w -s or -P are not effective using the output format -f fasta\n");
         exit(0);
     }
-    if((gfffiles == 1 || file_effsz[0] != 0) && file_weights_char[0]==0){
-        fzprintf(file_logerr,&file_logerr_gz,"\nError: the option -e [file_name] is mandatory fot tfasta output or when annotation is used\n");
-        printf("\nError: \n the option -e [file name] is mandatory fot tfasta output or when annotation is used\n");
-        exit(1);
-    }
-    if(mask_name[0]==0) {
-        if(file_out[0]=='\0') strcpy(mask_name, file_in);
-        else strcpy(mask_name, file_out);
-        strcat(mask_name,"_MASK.txt");
-    }
     if(outgroup==1 && npops==0) {
         fzprintf(file_logerr,&file_logerr_gz,"\nError:  the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
         printf("\nError:  the option -G (outgroup) needs to define option -N: the population samples of at least two pops\n");
@@ -702,8 +653,8 @@ int main(int argc, const char * argv[]) {
     if(strcmp(chr_name_all,"") == 0 &&
        ((input_format[0] == 'f' && (file_GFF[0] != '\0' || file_effsz[0] != '\0' || file_Wcoord[0] != '\0' || file_wps[0] != '\0' || file_masked[0] != '\0')) ||
         (input_format[0] == 't' || format[0] == 't'))) {
-        fzprintf(file_logerr,&file_logerr_gz,"\nError: the name of the scaffold file (option -n) must be defined\n");
-        printf("\nError: the name of the scaffold file (option -n) must be defined\n");
+        fzprintf(file_logerr,&file_logerr_gz,"\nError: the name of the scaffold (option -n) must be defined\n");
+        printf("\nError: the name of the scaffold (option -n) must be defined\n");
         exit(1);
     }
     if(vint_perpop_nsam[0]==0) {
@@ -875,7 +826,7 @@ int main(int argc, const char * argv[]) {
                       &nsites1_pop_outg, &nsites2_pop_outg, &nsites3_pop_outg,
                       wP,wPV,file_ws,&file_ws_gz,wgenes,nwindows,include_unknown,
                       masked_wgenes,masked_nwindows,
-                      chr_name,i,nscaffolds, file_weights_char, mask_name) == 0) {
+                      chr_name,i,nscaffolds) == 0) {
             fzprintf(file_logerr,&file_logerr_gz,"Error processing input data.\n");
             exit(1);
         }
@@ -1003,7 +954,7 @@ void usage(void)
     printf("      -F [input format file: f (fasta), t (tfasta)]\n");/*fasta or tfasta formats are only available*/
     printf("      -i [path and name of the input file (text or gz indexed)]\n");
     printf("      -f [output format file: t (tfasta), f (fasta), m (ms), 0(nothing)]\n");
-    printf("      -o [path and name of the output sequence file]\n");/* (include extension .gz except for ms files)]\n");*/
+    printf("      -o [path and name of the output file (include extension .gz except ms files)]\n");
     printf("      -n [name of the file containing the name(s) of scaffold(s) and their length (separated by a tab), one per line (ex. fai file)]\n");
     printf("   OPTIONAL PARAMETERS:\n");
     printf("      -h [help and exit]\n");
@@ -1014,9 +965,7 @@ void usage(void)
     printf("      -G [outgroup included (1) or not (0), last population (1/0)]. DEFAULT: 0\n");
     printf("      -u [Missing counted (1) or not (0) in weights given GFF annotation]. DEFAULT: 0\n");
     printf("      -m [masking regions: file indicating the start and the end of regions to be masked by Ns]\n");
-    printf("      -E [input file with weights for masking positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     printf("     Outputing ms format:\n");
-    printf("      -k [path and name of the output mask file for ms].\n");// DEFAULT: 'file_output'_MASK.txt\n");
     printf("      -w [window size]. DEFAULT: Total_length\n");
     printf("      -s [slide size]. DEFAULT: Total_length\n");
     printf("     Inputing fasta format:\n");
@@ -1027,7 +976,7 @@ void usage(void)
     printf("         [if 'synonymous', 'nonsynonymous', 'silent' add: Genetic_Code: Nuclear_Universal,mtDNA_Drosophila,mtDNA_Mammals,Other]\n");
     printf("         [if 'Other', introduce the single letter code for the 64 triplets in the order UUU UUC UUA UUG ... etc.]\n");
     printf("      -c [in case use coding regions, criteria to consider transcripts (max/min/first/long)]. DEFAULT: long\n");
-    printf("      -e [path and name of the output weights file (mandatory if included GFF)]\n");
+    printf("      -E [instead -g & -c, input file with weights for positions: include three columns with a header, first the physical positions (1...end), second the weight for positions and third a boolean weight for the variant (eg. syn variant but nsyn position)]\n");
     /*printf("      -r [rewrite the fasta file for selected region (not valid for silent/syn/nsyn) (1/0)]\n");*/
     /*printf("      -t [rewrite the fasta transposed file including the weight of each position and variant, if available) (1/0)]\n");*//*new!*/
     /*printf("\     -e [input file with effect sizes for variants: include two columns with a header, first the physical positions and second the weight]\n");*/
