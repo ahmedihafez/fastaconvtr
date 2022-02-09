@@ -969,7 +969,9 @@ void usage(void)
     printf("      -w [window size]. DEFAULT: Total_length\n");
     printf("      -s [slide size]. DEFAULT: Total_length\n");
     printf("     Inputing fasta format:\n");
-    printf("      -p [if fasta input, haplotype:1 (single sequence) genotype:2 (two mixed sequences in IUPAC). DEFAULT: 1\n");
+    printf("      -p [if fasta input,\n");
+    printf("             haplotype: 1 (single sequence)\n");
+    printf("             genotype:  2 (two diploid mixed sequences in IUPAC format. WARNING! lowercase will be considered as one haplotype missing!). DEFAULT: 1\n");
     printf("     Annotation file and weight options:\n");
     printf("      -g [GFF_file]\n");
     printf("         [add also: coding,noncoding,synonymous,nonsynonymous,silent, others (whatever annotated)]\n");

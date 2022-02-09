@@ -1,4 +1,4 @@
-#fastaconvtr v0.1beta (20220113) Sebastian E. Ramos-Onsins.
+#fastaconvtr v0.1beta (20220209) Sebastian E. Ramos-Onsins.
 
 Flags:
       -F [input format file: f (fasta), t (tfasta)]
@@ -19,7 +19,9 @@ Flags:
       -w [window size]. DEFAULT: Total_length
       -s [slide size]. DEFAULT: Total_length
      Inputing fasta format:
-      -p [if fasta input, haplotype:1 (single sequence) genotype:2 (two mixed sequences in IUPAC). DEFAULT: 1
+      -p [if fasta input,
+             haplotype: 1 (single sequence)
+             genotype:  2 (two diploid mixed sequences in IUPAC format. WARNING! lowercase will be considered as one haplotype missing!). DEFAULT: 1
      Annotation file and weight options:
       -g [GFF_file]
          [add also: coding,noncoding,synonymous,nonsynonymous,silent, others (whatever annotated)]
