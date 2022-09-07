@@ -73,10 +73,13 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
      int include_unknown; include missing positions or not
 	*/
 		
-    FILE  *file_fas   	= 0;
-    SGZip *file_fas_gz  = 0;
+    FILE  *file_fas = 0;
+    SGZip file_fas_gz;
+    FILE  *file_tfas = 0;
+    SGZip *file_tfas_gz = 0;
 
-    /*char file_fas_char[MSP_MAX_FILENAME];*/
+    char file_fas_char[MSP_MAX_FILENAME];
+    char file_fas_char2[MSP_MAX_FILENAME];
     static FILE *file_weights	=	0;
     static SGZip file_weights_gz;
     static struct SGZIndex file_weights_gz_index;          /* This is the index for the output gz file. */
@@ -122,7 +125,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 	
     long int init_site,end_site;
     long int yy;
-	
+  	
     FILE *file_mask;
     SGZip file_mask_gz;
 
@@ -528,7 +531,7 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 		}
 		/*rewrite fasta files of the specific filtered region (by gff, excluding experiments using sil/syn/nsyn)*/
 		if(refasta == 1) {
-            fzprintf(file_logerr,file_logerr_gz,"\nRewrite fasta file for specific regions...");
+            fzprintf(file_logerr,file_logerr_gz,"\nWrite fasta file for specific regions...");
             fflush(stdout);
             /*
             memset(file_fas_char, 0, MSP_MAX_FILENAME);
@@ -540,64 +543,87 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			}
 			else {
             */
+            /*
                 file_fas = file_output;
                 file_fas_gz = file_output_gz;
-
+            */
                 if(nwindows>0) {
-                    for(x=0;x<n_samp;x++) {
-                        fzprintf(file_fas,file_fas_gz,">%s\n",names2[x]);
-                        for(yy=0;yy<nwindows;yy++) {
-                            for(xx=wgenes[2*yy+0]-1;xx<=wgenes[2*yy+1]-1;xx++) {
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '1') {
-                                    fzprintf(file_fas,file_fas_gz,"T");
-                                }
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '2') {
-                                    fzprintf(file_fas,file_fas_gz,"C");
-                                }
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '3') {
-                                    fzprintf(file_fas,file_fas_gz,"G");
-                                }
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '4') {
-                                    fzprintf(file_fas,file_fas_gz,"A");
-                                }
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '5') {
-                                    fzprintf(file_fas,file_fas_gz,"N");
-                                }
-                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '6') {
-                                    fzprintf(file_fas,file_fas_gz,"-");
+                    //fzprintf(file_fas,file_fas_gz,">%s_%ld\n",names2[x]);
+                    for(yy=0;yy<nwindows;yy++) {
+                        memset(file_fas_char, 0, MSP_MAX_FILENAME);
+                        strcpy(file_fas_char,file_out);
+                        strcat(file_fas_char,chr_name);
+                        snprintf(file_fas_char2,MSP_MAX_FILENAME, "_win_%ld.fas", yy);
+                        strcat(file_fas_char,file_fas_char2);
+                        if( (file_fas = fzopen( file_fas_char, "w", &file_fas_gz)) == 0) {
+                            fzprintf(file_output,file_output_gz,"\n It is not possible to write the fasta file %s.", file_fas_char);
+                        }
+                        else {
+                            for(x=0;x<n_samp;x++) {
+                                fzprintf(file_fas,&file_fas_gz,">%s\n",names2[x]); /*one fasta per window*/
+                                for(xx=wgenes[2*yy+0]-1;xx<=wgenes[2*yy+1]-1;xx++) {
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '1') {
+                                        fzprintf(file_fas,&file_fas_gz,"T");
+                                    }
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '2') {
+                                        fzprintf(file_fas,&file_fas_gz,"C");
+                                    }
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '3') {
+                                        fzprintf(file_fas,&file_fas_gz,"G");
+                                    }
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '4') {
+                                        fzprintf(file_fas,&file_fas_gz,"A");
+                                    }
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '5') {
+                                        fzprintf(file_fas,&file_fas_gz,"N");
+                                    }
+                                    if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '6') {
+                                        fzprintf(file_fas,&file_fas_gz,"-");
+                                    }
                                 }
                             }
+                            fzprintf(file_fas,&file_fas_gz,"\n");
                         }
-                        fzprintf(file_fas,file_fas_gz,"\n");
+                        //fzprintf(file_fas,&file_fas_gz,"\n");
                     }
-                    fzclose(file_fas,file_fas_gz);
+                    /*fzclose(file_fas,&file_fas_gz);*/
                 }
                 else {
-                    for(x=0;x<n_samp;x++) {
-                        fzprintf(file_fas,file_fas_gz,">%s\n",names2[x]);
-                        for(xx=0;xx<n_site;xx++) {
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '1') {
-                                fzprintf(file_fas,file_fas_gz,"T");
-                            }
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '2') {
-                                fzprintf(file_fas,file_fas_gz,"C");
-                            }
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '3') {
-                                fzprintf(file_fas,file_fas_gz,"G");
-                            }
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '4') {
-                                fzprintf(file_fas,file_fas_gz,"A");
-                            }
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '5') {
-                                fzprintf(file_fas,file_fas_gz,"N");
-                            }
-                            if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '6') {
-                                fzprintf(file_fas,file_fas_gz,"-");
+                    memset(file_fas_char, 0, MSP_MAX_FILENAME);
+                    strcpy(file_fas_char, file_out);
+                    strcat(file_fas_char,"_");
+                    strcat(file_fas_char,chr_name);
+                    strcat(file_fas_char,".fa");
+                    if( (file_fas = fzopen( file_fas_char, "w", &file_fas_gz)) == 0) {
+                        fzprintf(file_output,file_output_gz,"\n It is not possible to write the fasta file %s.", file_fas_char);
+                    }
+                    else {
+                        for(x=0;x<n_samp;x++) {
+                            fzprintf(file_fas,&file_fas_gz,">%s\n",names2[x]); /*one fasta per chr_name*/
+                            for(xx=0;xx<n_site;xx++) {
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '1') {
+                                    fzprintf(file_fas,&file_fas_gz,"T");
+                                }
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '2') {
+                                    fzprintf(file_fas,&file_fas_gz,"C");
+                                }
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '3') {
+                                    fzprintf(file_fas,&file_fas_gz,"G");
+                                }
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '4') {
+                                    fzprintf(file_fas,&file_fas_gz,"A");
+                                }
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '5') {
+                                    fzprintf(file_fas,&file_fas_gz,"N");
+                                }
+                                if(DNA_matr2[(long int)n_site*(unsigned long)x+xx] == '6') {
+                                    fzprintf(file_fas,&file_fas_gz,"-");
+                                }
                             }
                         }
-                        fzprintf(file_fas,file_fas_gz,"\n");
+                        fzprintf(file_fas,&file_fas_gz,"\n");
                     }
-                    fzclose(file_fas,file_fas_gz);
+                    /*fzclose(file_fas,&file_fas_gz);*/
                     
                     if(gfffiles == 1 || file_es != 0) {
                         memset(file_weights_char, 0, MSP_MAX_FILENAME);
@@ -691,22 +717,22 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 			}
 			else {
 			*/
-                file_fas = file_output;
-                file_fas_gz = file_output_gz;
+                file_tfas = file_output;
+                file_tfas_gz = file_output_gz;
 
                 if(first == 0) {
-                    /*fzprintf(file_fas,file_fas_gz,"#PLOIDY: ");
+                    /*fzprintf(file_tfas,file_tfas_gz,"#PLOIDY: ");
                     for(x=0;x<n_samp;x++) {
-                        fzprintf(file_fas,file_fas_gz,"%d ",ploidy);
+                        fzprintf(file_tfas,file_tfas_gz,"%d ",ploidy);
                     }
-                    fzprintf(file_fas,file_fas_gz,"\n");*/
-                    fzprintf(file_fas,file_fas_gz,"#NAMES: ");
+                    fzprintf(file_tfas,file_tfas_gz,"\n");*/
+                    fzprintf(file_tfas,file_tfas_gz,"#NAMES: ");
                     for(x=0;x<n_samp;x++) {
-                        fzprintf(file_fas,file_fas_gz,">%s ",names2[x]);
+                        fzprintf(file_tfas,file_tfas_gz,">%s ",names2[x]);
                     }
-                    fzprintf(file_fas,file_fas_gz,"\n");
-                    /*if(gfffiles == 0 && file_es == 0) */fzprintf(file_fas,file_fas_gz,"#CHR:POSITION\tGENOTYPES");
-                    fzprintf(file_fas,file_fas_gz,"\n");
+                    fzprintf(file_tfas,file_tfas_gz,"\n");
+                    /*if(gfffiles == 0 && file_es == 0) */fzprintf(file_tfas,file_tfas_gz,"#CHR:POSITION\tGENOTYPES");
+                    fzprintf(file_tfas,file_tfas_gz,"\n");
                 }
                 if(gfffiles == 1 || file_es != 0) {
                     memset(file_weights_char, 0, MSP_MAX_FILENAME);
@@ -756,32 +782,32 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 				dd = 0;
 
 				for(xx=0;xx<n_site;xx++) {
-                    fzprintf(file_fas,file_fas_gz,"%s:%ld\t",chr_name,xx+1);
+                    fzprintf(file_tfas,file_tfas_gz,"%s:%ld\t",chr_name,xx+1);
                     if(gfffiles == 1 || file_es != 0) fzprintf(file_weights,&file_weights_gz,"%s:%ld\t",chr_name,xx+1);
 					for(x=0;x<n_samp;x++) {
-						/*if(x != 0 && ploidy == 1) fzprintf(file_fas,file_fas_gz,",");*/
-						/*if(x != 0 && ploidy == 2 && x/2 == (float)x/2.0) fzprintf(file_fas,file_fas_gz,",");*/
+						/*if(x != 0 && ploidy == 1) fzprintf(file_tfas,file_tfas_gz,",");*/
+						/*if(x != 0 && ploidy == 2 && x/2 == (float)x/2.0) fzprintf(file_tfas,file_tfas_gz,",");*/
 						switch (DNA_matr2[(long int)n_site*(unsigned long)x+xx]) {
 							case '1':
-								fzprintf(file_fas,file_fas_gz,"T");
+								fzprintf(file_tfas,file_tfas_gz,"T");
 								break;
 							case '2':
-								fzprintf(file_fas,file_fas_gz,"C");
+								fzprintf(file_tfas,file_tfas_gz,"C");
 								break;
 							case '3':
-								fzprintf(file_fas,file_fas_gz,"G");
+								fzprintf(file_tfas,file_tfas_gz,"G");
 								break;
 							case '4':
-								fzprintf(file_fas,file_fas_gz,"A");
+								fzprintf(file_tfas,file_tfas_gz,"A");
 								break;
 							case '5':
-								fzprintf(file_fas,file_fas_gz,"N");
+								fzprintf(file_tfas,file_tfas_gz,"N");
 								break;
 							case '6':
-								fzprintf(file_fas,file_fas_gz,"-");
+								fzprintf(file_tfas,file_tfas_gz,"-");
 								break;
 							default:
-								fzprintf(file_fas,file_fas_gz,"%c",DNA_matr2[(long int)n_site*(unsigned long)x+xx]);
+								fzprintf(file_tfas,file_tfas_gz,"%c",DNA_matr2[(long int)n_site*(unsigned long)x+xx]);
 								break;
 						}
 					}
@@ -800,11 +826,11 @@ int read_fasta( FILE *file_input, SGZip *file_input_gz, FILE *file_output, SGZip
 						else 
 							fzprintf(file_weights,&file_weights_gz,"NA\t");
 					}
-                    fzprintf(file_fas,file_fas_gz,"\n");
+                    fzprintf(file_tfas,file_tfas_gz,"\n");
                     if(gfffiles == 1 || file_es != 0) fzprintf(file_weights,&file_weights_gz,"\n");
 				}
 			/*}
-			fzclose(file_fas,file_fas_gz);
+			fzclose(file_tfas,file_tfas_gz);
             */
             if((first == nscaffolds-1) && (gfffiles == 1 || file_es != 0))
                 fzclose(file_weights,&file_weights_gz);
@@ -1464,7 +1490,7 @@ int assigna(FILE *file_input, SGZip *file_input_gz,int *c,int *nseq,int *maxsam,
     
     j = 0;
     for(i_=0;i_<N_VAR;i_++) {
-        while((var_file[i_][j]) == *c && (var_file[i_][j]) != '\0' && c != '\0') {
+        while((var_file[i_][j]) == *c && (var_file[i_][j]) != '\0' && *c != '\0') {
             *c = fzgetc(file_input, file_input_gz);
             j++;
         }

@@ -1,0 +1,1 @@
+#fastaconvtr -F fasta -f fasta -i ./100Kchr10_fa2fa_01.fa -o ./100Kchr10_fa2fa_01B.fa -n ./chr10.txt 

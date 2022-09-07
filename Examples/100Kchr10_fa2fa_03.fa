@@ -1,0 +1,1 @@
+#fastaconvtr -F fasta -f fasta -i ./100Kchr10.fa -o ./100Kchr10_fa2fa_03.fa -E ./100Kchr10_fa2fa_02.fa_npops1_nsam42_nonsynonymous_max_IncludeMissingVariantsmhits_NOoutg_ploidy1_WEIGHTS.gz -n ./chr10.txt 

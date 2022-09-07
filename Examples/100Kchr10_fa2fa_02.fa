@@ -1,0 +1,1 @@
+#fastaconvtr -F fasta -f fasta -i ./100Kchr10.fa -o ./100Kchr10_fa2fa_02.fa -g ./100Kchr10.gtf nonsynonymous Nuclear_Universal -c max -u 1 -n ./chr10.txt 

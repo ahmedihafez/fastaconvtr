@@ -1,4 +1,4 @@
-#fastaconvtr v0.1beta (20220209) Sebastian E. Ramos-Onsins.
+#fastaconvtr v0.1beta (20220907) Sebastian E. Ramos-Onsins.
 
 Flags:
       -F [input format file: f (fasta), t (tfasta)]
